@@ -2,7 +2,9 @@ package com.zestigo.controller;
 
 import com.zestigo.dto.AddressDto;
 import com.zestigo.dto.UserDto;
+import com.zestigo.dto.ClerkSyncRequest;
 import com.zestigo.service.UserService;
+import com.zestigo.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +18,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenProvider tokenProvider;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtTokenProvider tokenProvider) {
         this.userService = userService;
+        this.tokenProvider = tokenProvider;
     }
 
     @GetMapping("/me")
@@ -43,5 +47,24 @@ public class UserController {
     public ResponseEntity<Void> deleteAddress(Principal principal, @PathVariable("id") String id) {
         userService.deleteAddress(principal.getName(), id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/clerk-sync")
+    public ResponseEntity<UserDto> clerkSync(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Valid @RequestBody ClerkSyncRequest syncRequest) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String token = authHeader.substring(7);
+        if (!tokenProvider.validateToken(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        String tokenClerkId = tokenProvider.getUsernameFromToken(token);
+        if (!tokenClerkId.equals(syncRequest.getClerkId())) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        UserDto syncedUser = userService.syncClerkUser(syncRequest);
+        return ResponseEntity.ok(syncedUser);
     }
 }

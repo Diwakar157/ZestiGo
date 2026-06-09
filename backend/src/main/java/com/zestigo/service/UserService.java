@@ -57,7 +57,41 @@ public class UserService {
         User savedUser = userRepository.save(user);
         log.info("UserService: Successfully saved user entity to database. ID: {}", savedUser.getId());
         return UserMapper.toDto(savedUser);
+     }
+
+    public UserDto syncClerkUser(com.zestigo.dto.ClerkSyncRequest request) {
+        log.info("UserService: Entering syncClerkUser with clerkId='{}' and email='{}'", request.getClerkId(), request.getEmail());
+        
+        User user = userRepository.findById(request.getClerkId())
+                .orElseGet(() -> userRepository.findByEmail(request.getEmail())
+                        .map(existingUser -> {
+                            log.info("UserService: Mapping local user with email '{}' to Clerk ID '{}'", request.getEmail(), request.getClerkId());
+                            return existingUser;
+                        })
+                        .orElseGet(() -> {
+                            log.info("UserService: Creating new user for Clerk ID '{}'", request.getClerkId());
+                            User newUser = new User();
+                            newUser.setId(request.getClerkId());
+                            newUser.setRole(Role.ROLE_USER);
+                            return newUser;
+                        }));
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        if (request.getPhone() != null && !request.getPhone().isBlank()) {
+            user.setPhone(request.getPhone());
+        }
+        if (request.getAvatar() != null && !request.getAvatar().isBlank()) {
+            user.setAvatar(request.getAvatar());
+        }
+        user.setProvider(com.zestigo.entity.AuthProvider.CLERK);
+        user.setProviderId(request.getClerkId());
+
+        User savedUser = userRepository.save(user);
+        log.info("UserService: Successfully synced Clerk user. Local ID: {}", savedUser.getId());
+        return UserMapper.toDto(savedUser);
     }
+
 
     @Transactional(readOnly = true)
     public UserDto getUserByEmail(String email) {

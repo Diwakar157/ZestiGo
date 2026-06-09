@@ -42,3 +42,8 @@ jwt:
   # Represents: "zestigo-secret-key-for-jwt-token-authentication-minimum-256-bits"
   secret: emVzdGlnby1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tYXV0aGVudGljYXRpb24tbWluaW11bS0yNTYtYml0cw==
   expiration: 86400000 # 24 hours in milliseconds
+
+clerk:
+  publishable-key: ${CLERK_PUBLISHABLE_KEY:pk_test_ZW5oYW5jZWQtbGFyay0yOC5jbGVyay5hY2NvdW50cy5kZXYk}
+  secret-key: ${CLERK_SECRET_KEY:sk_test_xrk0XlISEyZMckh9sdrnvS1KKQfq3card3RLHTLzZj}
+
