@@ -1,13 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Clock, ShieldCheck, Truck } from "lucide-react";
+import { Clock, ShieldCheck, Truck } from "lucide-react";
 import heroImage from "@/assets/hero/zestigo-hero.jpg";
-import { SearchBar } from "@/components/SearchBar";
 import { CategoryCard } from "@/components/CategoryCard";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import { FoodCard } from "@/components/FoodCard";
 import { OfferBanner } from "@/components/OfferBanner";
-import { Button } from "@/components/Button";
 import { SkeletonGrid } from "@/components/Skeleton";
 import { restaurantService } from "@/services/restaurantService";
 import { foodService } from "@/services/foodService";
@@ -66,47 +64,78 @@ function Landing() {
 
   return (
     <div className="bg-background">
-      {/* Hero */}
-      <div className="bg-premium-hero relative overflow-hidden border-b border-border/20 min-h-[90vh] flex items-center">
-        <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24 relative z-10 w-full">
-          <div className="animate-fade-in flex flex-col justify-center text-left lg:pr-8">
-            <h1 className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              Fresh Food <br className="hidden sm:inline" />
-              Delivered To Your Doorstep
+      {/* Hero — Cinematic full-bleed background */}
+      <section className="hero-cinematic relative overflow-hidden flex items-center" style={{ minHeight: "85vh" }}>
+        {/* Background image — fills the entire hero */}
+        <img
+          src={heroImage}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Subtle dark scrim for overall contrast */}
+        <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+
+        {/* Cinematic gradient overlay — dark left → clear right */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(12,35,25,0.95) 0%, rgba(12,35,25,0.85) 18%, rgba(12,35,25,0.65) 38%, rgba(12,35,25,0.30) 58%, rgba(12,35,25,0.00) 80%)",
+          }}
+        />
+
+        {/* Content — sits above overlays */}
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-20 sm:px-8 lg:py-28">
+          <div className="max-w-xl animate-fade-in">
+            {/* Tagline pill */}
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-1.5 text-xs font-semibold tracking-wider text-white/90 uppercase mb-6">
+              🍛 Premium Food Delivery
+            </span>
+
+            <h1 className="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
+              Fresh Food{" "}
+              <br className="hidden sm:inline" />
+              <span className="text-[#95D5B2]">Delivered Faster</span>
             </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              Discover top-rated restaurants, exclusive offers, and lightning-fast delivery with Zestigo.
+
+            <p className="mt-6 max-w-md text-base leading-relaxed text-white/75 sm:text-lg">
+              Discover top-rated restaurants, exclusive offers, and lightning-fast
+              delivery with Zestigo. Your next great meal is minutes away.
             </p>
-            
+
             {/* CTA Buttons */}
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-10 flex flex-wrap items-center gap-4">
               <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
-                <Button variant="primary" size="lg" className="h-12 rounded-xl px-8 font-semibold shadow-soft hover:shadow-card hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200">
+                <button className="hero-btn-primary h-13 rounded-xl px-8 text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]">
                   Order Now
-                </Button>
+                </button>
               </Link>
               <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
-                <Button variant="outline" size="lg" className="h-12 rounded-xl px-8 font-semibold border-border/80 hover:bg-secondary hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200">
+                <button className="hero-btn-outline h-13 rounded-xl px-8 text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]">
                   Explore Restaurants
-                </Button>
+                </button>
               </Link>
             </div>
-          </div>
-          <div className="relative flex justify-center lg:justify-end animate-fade-in mt-12 lg:mt-0 w-full">
-            {/* Glow Behind the Image */}
-            <div className="absolute inset-0 bg-hero-image-glow -m-10 pointer-events-none z-0" />
-            
-            {/* Image Wrapper */}
-            <div className="relative w-full max-w-[700px] z-10 flex justify-center lg:justify-end">
-              <img
-                src={heroImage}
-                alt="Zestigo Food Delivery"
-                className="w-full h-auto object-contain rounded-3xl shadow-[0_25px_50px_rgba(0,0,0,0.08)]"
-              />
+
+            {/* Trust strip */}
+            <div className="mt-10 flex items-center gap-6 text-sm text-white/60">
+              <span className="flex items-center gap-1.5">
+                <Truck className="size-4" /> 30 min delivery
+              </span>
+              <span className="h-4 w-px bg-white/20" />
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="size-4" /> Secure payments
+              </span>
+              <span className="h-4 w-px bg-white/20" />
+              <span className="flex items-center gap-1.5">
+                <Clock className="size-4" /> Live tracking
+              </span>
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       {/* Perks */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6">

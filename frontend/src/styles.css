@@ -243,22 +243,47 @@
   animation: float-delayed 5s ease-in-out infinite;
 }
 
-/* Premium Hero Section Background */
-.bg-premium-hero {
-  background: linear-gradient(135deg, #F5F1E8 0%, #FAF9F6 30%, #EADBC8 70%, #D8E9DD 100%);
+/* ─── Cinematic Hero Section ─── */
+.hero-cinematic {
+  /* Edge-to-edge, no border-radius */
+  border-radius: 0;
 }
 
-.dark .bg-premium-hero {
-  background: linear-gradient(135deg, oklch(0.21 0.03 162) 0%, oklch(0.24 0.035 162) 50%, oklch(0.18 0.025 162) 100%);
+/* Primary CTA — vibrant green */
+.hero-btn-primary {
+  background: linear-gradient(135deg, #2F7D5A 0%, #4F9D75 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(47, 125, 90, 0.4);
+}
+.hero-btn-primary:hover {
+  background: linear-gradient(135deg, #3a8f67 0%, #5aad82 100%);
+  box-shadow: 0 6px 28px rgba(47, 125, 90, 0.55);
 }
 
-/* Soft green glow behind the image */
-.bg-hero-image-glow {
-  background: radial-gradient(circle at center, rgba(45, 106, 79, 0.15), transparent 70%);
+/* Secondary CTA — glass outline */
+.hero-btn-outline {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+}
+.hero-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
-.dark .bg-hero-image-glow {
-  background: radial-gradient(circle at center, rgba(149, 213, 178, 0.08), transparent 70%);
+/* Dark mode adjustments */
+.dark .hero-btn-primary {
+  background: linear-gradient(135deg, #4F9D75 0%, #6BB890 100%);
+  box-shadow: 0 4px 20px rgba(79, 157, 117, 0.3);
+}
+.dark .hero-btn-outline {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 /* Glassmorphism Cards */
