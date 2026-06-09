@@ -1,0 +1,35 @@
+# Root .gitignore for ZestiGo project
+
+# Java / Maven (Backend)
+**/target/
+**/target/**
+**/target
+.idea/
+*.iml
+.metadata
+.classpath
+.project
+.settings/
+
+# Node / Frontend
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/.output/
+**/.vinxi/
+**/.tanstack/
+**/.nitro/
+**/*.local
+**/logs/
+**/*.log
+
+# Environment variables (optional check)
+.env
+.env.production
+.env.local
+.env.*.local
+
+# IDEs
+.vscode/
+.DS_Store
+Thumbs.db

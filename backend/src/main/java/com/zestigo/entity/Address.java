@@ -1,0 +1,87 @@
+package com.zestigo.entity;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "addresses")
+public class Address {
+
+    @Id
+    @NotBlank
+    @Size(max = 36)
+    private String id;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @NotBlank
+    @Size(max = 50)
+    @Column(nullable = false, length = 50)
+    private String label;
+
+    @NotBlank
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String line;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    public Address() {
+    }
+
+    public Address(String id, User user, String label, String line, LocalDateTime createdAt) {
+        this.id = id;
+        this.user = user;
+        this.label = label;
+        this.line = line;
+        this.createdAt = createdAt;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+
+    public String getLine() { return line; }
+    public void setLine(String line) { this.line = line; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    // Builder
+    public static AddressBuilder builder() {
+        return new AddressBuilder();
+    }
+
+    public static class AddressBuilder {
+        private String id;
+        private User user;
+        private String label;
+        private String line;
+
+        public AddressBuilder id(String id) { this.id = id; return this; }
+        public AddressBuilder user(User user) { this.user = user; return this; }
+        public AddressBuilder label(String label) { this.label = label; return this; }
+        public AddressBuilder line(String line) { this.line = line; return this; }
+
+        public Address build() {
+            return new Address(id, user, label, line, null);
+        }
+    }
+}
