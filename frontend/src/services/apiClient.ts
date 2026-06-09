@@ -5,8 +5,12 @@ import axios, { type InternalAxiosRequestConfig } from "axios";
  * Auth tokens are injected via Clerk's getToken() called from request interceptor.
  * The token getter is set by ClerkTokenInjector component after Clerk loads.
  */
+const isServer = typeof window === "undefined";
+
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? "/api",
+  baseURL: isServer
+    ? (import.meta.env.VITE_API_URL || "http://localhost:8081")
+    : "/api",
   headers: { "Content-Type": "application/json" },
   timeout: 10000,
 });
