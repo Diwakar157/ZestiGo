@@ -8,10 +8,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { ClerkProvider } from "@clerk/tanstack-react-start";
+import { ClerkTokenInjector } from "../components/ClerkTokenInjector";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { AuthProvider } from "../context/AuthContext";
 import { CartProvider } from "../context/CartContext";
 import { WishlistProvider } from "../context/WishlistContext";
 import { ThemeProvider } from "../context/ThemeContext";
@@ -163,9 +164,10 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
+    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+      <ClerkTokenInjector />
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
           <CartProvider>
             <WishlistProvider>
               <div className="flex min-h-screen flex-col">
@@ -179,8 +181,8 @@ function RootComponent() {
               <Toaster position="top-center" richColors />
             </WishlistProvider>
           </CartProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }

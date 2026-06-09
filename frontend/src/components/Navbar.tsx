@@ -1,7 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Heart, Menu, Moon, ShoppingCart, Sun, User, UtensilsCrossed, X } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import {
+  SignInButton,
+  SignUpButton,
+  UserButton,
+  useAuth,
+} from "@clerk/tanstack-react-start";
 import { useCart } from "@/context/CartContext";
 import { useTheme } from "@/context/ThemeContext";
 import { classNames } from "@/utils/format";
@@ -15,10 +20,9 @@ const links = [
 ] as const;
 
 export function Navbar() {
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isSignedIn } = useAuth();
   const { count } = useCart();
   const { theme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   return (
@@ -49,6 +53,7 @@ export function Navbar() {
         </ul>
 
         <div className="ml-auto flex items-center gap-1.5">
+          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle dark mode"
@@ -57,6 +62,7 @@ export function Navbar() {
             {theme === "light" ? <Moon className="size-5" /> : <Sun className="size-5" />}
           </button>
 
+          {/* Wishlist */}
           <Link
             to="/wishlist"
             aria-label="Wishlist"
@@ -65,6 +71,7 @@ export function Navbar() {
             <Heart className="size-5" />
           </Link>
 
+          {/* Cart */}
           <Link
             to="/cart"
             aria-label="Cart"
@@ -78,29 +85,35 @@ export function Navbar() {
             )}
           </Link>
 
-          {isAuthenticated ? (
-            <div className="hidden items-center gap-2 md:flex">
-              <Link to="/profile" aria-label="Profile">
-                <img
-                  src={user?.avatar}
-                  alt={user?.name}
-                  className="size-10 rounded-2xl border border-border object-cover"
-                />
-              </Link>
-              <Button variant="ghost" size="sm" onClick={() => logout()}>
-                Logout
-              </Button>
-            </div>
-          ) : (
-            <Button
-              className="hidden md:inline-flex"
-              size="sm"
-              onClick={() => navigate({ to: "/login", search: { redirect: undefined } })}
-            >
-              Sign in
-            </Button>
-          )}
+          {/* Auth controls — desktop */}
+          <div className="hidden md:flex items-center gap-2">
+            {!isSignedIn ? (
+              <>
+                <SignInButton mode="modal">
+                  <Button size="sm" variant="outline" id="navbar-sign-in-btn">
+                    Sign in
+                  </Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button size="sm" id="navbar-sign-up-btn">
+                    Sign up
+                  </Button>
+                </SignUpButton>
+              </>
+            ) : (
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "size-9 rounded-2xl",
+                  },
+                }}
+                userProfileMode="navigation"
+                userProfileUrl="/profile"
+              />
+            )}
+          </div>
 
+          {/* Mobile hamburger */}
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label="Toggle menu"
@@ -111,6 +124,7 @@ export function Navbar() {
         </div>
       </nav>
 
+      {/* Mobile menu */}
       {open && (
         <div className="border-t border-border bg-background md:hidden">
           <ul className="space-y-1 px-4 py-3">
@@ -134,28 +148,29 @@ export function Navbar() {
                 Wishlist
               </Link>
             </li>
-            <li className="pt-2">
-              {isAuthenticated ? (
-                <Button
-                  block
-                  variant="outline"
-                  onClick={() => {
-                    setOpen(false);
-                    logout();
-                  }}
-                >
-                  Logout
-                </Button>
+            <li className="pt-2 space-y-2">
+              {!isSignedIn ? (
+                <>
+                  <SignInButton mode="modal">
+                    <Button block id="mobile-sign-in-btn">
+                      <User className="size-4" /> Sign in
+                    </Button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <Button block variant="outline" id="mobile-sign-up-btn">
+                      Create account
+                    </Button>
+                  </SignUpButton>
+                </>
               ) : (
-                <Button
-                  block
-                  onClick={() => {
-                    setOpen(false);
-                    navigate({ to: "/login", search: { redirect: undefined } });
-                  }}
-                >
-                  <User className="size-4" /> Sign in
-                </Button>
+                <div className="flex items-center gap-3 px-1 py-2">
+                  <UserButton
+                    appearance={{ elements: { avatarBox: "size-9 rounded-2xl" } }}
+                    userProfileMode="navigation"
+                    userProfileUrl="/profile"
+                  />
+                  <span className="text-sm font-medium text-foreground">My account</span>
+                </div>
               )}
             </li>
           </ul>
