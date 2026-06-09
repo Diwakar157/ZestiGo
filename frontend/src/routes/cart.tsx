@@ -49,7 +49,7 @@ function CartPage() {
           title="Your cart is empty"
           description="Add some delicious dishes to get started."
           action={
-            <Link to="/restaurants">
+            <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
               <Button>Browse restaurants</Button>
             </Link>
           }

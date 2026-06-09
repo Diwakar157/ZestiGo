@@ -35,7 +35,7 @@ export function SearchBar({ className }: { className?: string }) {
 
   function submit(value: string) {
     setOpen(false);
-    navigate({ to: "/restaurants", search: { search: value || undefined } });
+    navigate({ to: "/restaurants", search: { search: value || undefined, category: undefined } });
   }
 
   return (

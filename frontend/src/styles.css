@@ -217,10 +217,56 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(8px); }
+}
+
 @utility animate-fade-in {
   animation: fade-in 0.5s ease-out both;
 }
 
 @utility animate-scale-in {
   animation: scale-in 0.3s ease-out both;
+}
+
+@utility animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@utility animate-float-delayed {
+  animation: float-delayed 5s ease-in-out infinite;
+}
+
+/* Premium Hero Section Background */
+.bg-premium-hero {
+  background: 
+    radial-gradient(circle at top right, rgba(45, 106, 79, 0.15), transparent 50%), 
+    linear-gradient(135deg, #F5F1E8 0%, #FAF9F6 30%, #EADBC8 70%, #D8E9DD 100%);
+}
+
+.dark .bg-premium-hero {
+  background: 
+    radial-gradient(circle at top right, rgba(149, 213, 178, 0.08), transparent 50%), 
+    linear-gradient(135deg, oklch(0.21 0.03 162) 0%, oklch(0.24 0.035 162) 50%, oklch(0.18 0.025 162) 100%);
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.dark .glass-card {
+  background: rgba(27, 67, 50, 0.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }

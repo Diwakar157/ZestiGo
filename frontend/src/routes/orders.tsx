@@ -45,7 +45,7 @@ function Orders() {
             icon={<Package className="size-7" />}
             title="No orders yet"
             action={
-              <Link to="/restaurants">
+              <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
                 <Button>Start ordering</Button>
               </Link>
             }

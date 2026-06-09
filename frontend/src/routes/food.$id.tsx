@@ -37,7 +37,7 @@ function FoodDetails() {
         <EmptyState
           title="Dish not found"
           action={
-            <Link to="/restaurants">
+            <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
               <Button>Browse restaurants</Button>
             </Link>
           }

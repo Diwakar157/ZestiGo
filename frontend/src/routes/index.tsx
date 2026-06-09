@@ -65,55 +65,95 @@ function Landing() {
   });
 
   return (
-    <div className="bg-gradient-soft">
+    <div className="bg-background">
       {/* Hero */}
-      <section className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:py-20">
-        <div className="animate-fade-in">
-          <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground">
-            🍛 Authentic flavours • 1000+ restaurants across India
-          </span>
-          <h1 className="mt-5 text-4xl font-bold leading-tight text-foreground sm:text-5xl lg:text-6xl">
-            Your favourite Indian food, <span className="text-primary">delivered</span> fast
-          </h1>
-          <p className="mt-4 max-w-md text-lg text-muted-foreground">
-            From sizzling biryanis to crispy dosas — discover the best restaurants near you. Order
-            in seconds, track in real time, and enjoy every bite.
-          </p>
-          <div className="mt-7 max-w-lg">
-            <SearchBar />
-          </div>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/restaurants">
-              <Button variant="hero" size="lg">
-                Browse restaurants <ArrowRight className="size-5" />
-              </Button>
-            </Link>
-            <Link to="/offers">
-              <Button variant="outline" size="lg">
-                View offers
-              </Button>
-            </Link>
-          </div>
-        </div>
-        <div className="relative animate-scale-in">
-          <img
-            src={heroFood}
-            alt="A vibrant spread of Indian dishes"
-            width={1280}
-            height={1024}
-            className="w-full rounded-4xl object-cover shadow-elevated"
-          />
-          <div className="absolute -bottom-5 left-5 flex items-center gap-3 rounded-2xl bg-card p-3 shadow-card sm:left-8">
-            <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Truck className="size-5" />
+      <div className="bg-premium-hero relative overflow-hidden border-b border-border/20">
+        <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24 relative z-10">
+          <div className="animate-fade-in flex flex-col justify-center">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary uppercase tracking-wider">
+              🍛 Authentic Indian Cuisines
             </span>
-            <div>
-              <p className="text-sm font-semibold text-foreground">Free delivery</p>
-              <p className="text-xs text-muted-foreground">On your first order</p>
+            <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Fresh Food <br className="hidden sm:inline" />
+              <span className="text-primary">Delivered Faster</span>
+            </h1>
+            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
+              Order from the best restaurants near you with Zestigo. Fast delivery, premium experience, and exclusive offers.
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
+                <Button variant="primary" size="lg" className="h-12 rounded-xl px-8 font-semibold shadow-soft hover:shadow-card hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200">
+                  Order Now
+                </Button>
+              </Link>
+              <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
+                <Button variant="outline" size="lg" className="h-12 rounded-xl px-8 font-semibold border-border/80 hover:bg-secondary hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200">
+                  Explore Restaurants
+                </Button>
+              </Link>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mt-8 max-w-xl">
+              <p className="text-sm font-medium text-foreground/80 mb-2.5">What are you craving today?</p>
+              <SearchBar />
             </div>
           </div>
-        </div>
-      </section>
+          <div className="relative flex justify-center lg:justify-end animate-scale-in mt-10 lg:mt-0">
+            <div className="relative animate-float w-full max-w-md lg:max-w-none">
+              <img
+                src={heroFood}
+                alt="A vibrant spread of Indian dishes"
+                width={1280}
+                height={1024}
+                className="w-full h-auto rounded-[32px] object-cover shadow-elevated"
+              />
+              
+              {/* Free Delivery Badge */}
+              <div className="absolute -bottom-6 -left-6 sm:-left-8 flex items-center gap-3 rounded-2xl glass-card p-4 shadow-card">
+                <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                  <Truck className="size-5" />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">Free delivery</p>
+                  <p className="text-xs text-muted-foreground">On your first order</p>
+                </div>
+              </div>
+
+              {/* Glassmorphism Stats Card */}
+              <div className="absolute -top-6 -right-6 sm:-right-8 glass-card rounded-3xl p-5 shadow-elevated animate-float-delayed w-[240px] z-20">
+                <div className="flex flex-col gap-3.5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 font-semibold text-base">⭐</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">4.9 Rating</p>
+                      <p className="text-xs text-muted-foreground">Customer reviews</p>
+                    </div>
+                  </div>
+                  <div className="h-px bg-border/40" />
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary font-semibold text-base">🏪</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">1000+ Partner</p>
+                      <p className="text-xs text-muted-foreground">Restaurants</p>
+                    </div>
+                  </div>
+                  <div className="h-px bg-border/40" />
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-600 font-semibold text-base">⏱️</span>
+                    <div>
+                      <p className="text-sm font-bold text-foreground">30 min Delivery</p>
+                      <p className="text-xs text-muted-foreground">Average wait time</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
 
       {/* Perks */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -151,7 +191,7 @@ function Landing() {
           title="Popular restaurants"
           subtitle="Trending near you"
           action={
-            <Link to="/restaurants" className="text-sm font-semibold text-primary hover:underline">
+            <Link to="/restaurants" search={{ search: undefined, category: undefined }} className="text-sm font-semibold text-primary hover:underline">
               See all
             </Link>
           }

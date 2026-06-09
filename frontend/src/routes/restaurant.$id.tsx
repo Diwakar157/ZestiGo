@@ -53,7 +53,7 @@ function RestaurantDetails() {
         <EmptyState
           title="Restaurant not found"
           action={
-            <Link to="/restaurants">
+            <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
               <Button>Back to restaurants</Button>
             </Link>
           }

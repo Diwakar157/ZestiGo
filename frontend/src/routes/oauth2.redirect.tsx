@@ -37,7 +37,7 @@ function OAuth2Redirect() {
       navigate({ to: "/" });
     } else {
       toast.error("Google Authentication failed. Please try again.");
-      navigate({ to: "/login" });
+      navigate({ to: "/login", search: { redirect: undefined } });
     }
   }, [token, id, name, email, avatar, phone, loginWithToken, navigate]);
 

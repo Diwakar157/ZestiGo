@@ -44,7 +44,7 @@ function WishlistPage() {
             title="Your wishlist is empty"
             description="Tap the heart on any restaurant or dish to save it here."
             action={
-              <Link to="/restaurants">
+              <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
                 <Button>Explore</Button>
               </Link>
             }
