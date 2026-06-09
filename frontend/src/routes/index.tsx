@@ -67,18 +67,15 @@ function Landing() {
   return (
     <div className="bg-background">
       {/* Hero */}
-      <div className="bg-premium-hero relative overflow-hidden border-b border-border/20">
-        <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24 relative z-10">
-          <div className="animate-fade-in flex flex-col justify-center">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold text-primary uppercase tracking-wider">
-              🍛 Authentic Indian Cuisines
-            </span>
-            <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+      <div className="bg-premium-hero relative overflow-hidden border-b border-border/20 min-h-[90vh] flex items-center">
+        <section className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24 relative z-10 w-full">
+          <div className="animate-fade-in flex flex-col justify-center text-left lg:pr-8">
+            <h1 className="text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               Fresh Food <br className="hidden sm:inline" />
-              <span className="text-primary">Delivered Faster</span>
+              Delivered To Your Doorstep
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-relaxed text-muted-foreground">
-              Order from the best restaurants near you with Zestigo. Fast delivery, premium experience, and exclusive offers.
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-muted-foreground">
+              Discover top-rated restaurants, exclusive offers, and lightning-fast delivery with Zestigo.
             </p>
             
             {/* CTA Buttons */}
@@ -94,62 +91,20 @@ function Landing() {
                 </Button>
               </Link>
             </div>
-
-            {/* Search Bar */}
-            <div className="mt-8 max-w-xl">
-              <p className="text-sm font-medium text-foreground/80 mb-2.5">What are you craving today?</p>
-              <SearchBar />
-            </div>
           </div>
-          <div className="relative flex justify-center lg:justify-end animate-scale-in mt-10 lg:mt-0">
-            <div className="relative animate-float w-full max-w-md lg:max-w-none">
+          <div className="relative flex justify-center lg:justify-end animate-fade-in mt-12 lg:mt-0 w-full">
+            {/* Glow Behind the Image */}
+            <div className="absolute inset-0 bg-hero-image-glow -m-10 pointer-events-none z-0" />
+            
+            {/* Image Wrapper */}
+            <div className="relative w-full max-w-[700px] z-10 flex justify-center lg:justify-end">
               <img
                 src={heroFood}
-                alt="A vibrant spread of Indian dishes"
+                alt="Zestigo food delivery"
                 width={1280}
                 height={1024}
-                className="w-full h-auto rounded-[32px] object-cover shadow-elevated"
+                className="w-full h-auto max-w-[700px] rounded-[24px] shadow-[0_25px_50px_rgba(0,0,0,0.08)] object-contain"
               />
-              
-              {/* Free Delivery Badge */}
-              <div className="absolute -bottom-6 -left-6 sm:-left-8 flex items-center gap-3 rounded-2xl glass-card p-4 shadow-card">
-                <span className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                  <Truck className="size-5" />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">Free delivery</p>
-                  <p className="text-xs text-muted-foreground">On your first order</p>
-                </div>
-              </div>
-
-              {/* Glassmorphism Stats Card */}
-              <div className="absolute -top-6 -right-6 sm:-right-8 glass-card rounded-3xl p-5 shadow-elevated animate-float-delayed w-[240px] z-20">
-                <div className="flex flex-col gap-3.5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 font-semibold text-base">⭐</span>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">4.9 Rating</p>
-                      <p className="text-xs text-muted-foreground">Customer reviews</p>
-                    </div>
-                  </div>
-                  <div className="h-px bg-border/40" />
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary font-semibold text-base">🏪</span>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">1000+ Partner</p>
-                      <p className="text-xs text-muted-foreground">Restaurants</p>
-                    </div>
-                  </div>
-                  <div className="h-px bg-border/40" />
-                  <div className="flex items-center gap-3">
-                    <span className="flex size-9 items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-600 font-semibold text-base">⏱️</span>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">30 min Delivery</p>
-                      <p className="text-xs text-muted-foreground">Average wait time</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </section>

@@ -245,15 +245,20 @@
 
 /* Premium Hero Section Background */
 .bg-premium-hero {
-  background: 
-    radial-gradient(circle at top right, rgba(45, 106, 79, 0.15), transparent 50%), 
-    linear-gradient(135deg, #F5F1E8 0%, #FAF9F6 30%, #EADBC8 70%, #D8E9DD 100%);
+  background: linear-gradient(135deg, #F5F1E8 0%, #FAF9F6 30%, #EADBC8 70%, #D8E9DD 100%);
 }
 
 .dark .bg-premium-hero {
-  background: 
-    radial-gradient(circle at top right, rgba(149, 213, 178, 0.08), transparent 50%), 
-    linear-gradient(135deg, oklch(0.21 0.03 162) 0%, oklch(0.24 0.035 162) 50%, oklch(0.18 0.025 162) 100%);
+  background: linear-gradient(135deg, oklch(0.21 0.03 162) 0%, oklch(0.24 0.035 162) 50%, oklch(0.18 0.025 162) 100%);
+}
+
+/* Soft green glow behind the image */
+.bg-hero-image-glow {
+  background: radial-gradient(circle at center, rgba(45, 106, 79, 0.15), transparent 70%);
+}
+
+.dark .bg-hero-image-glow {
+  background: radial-gradient(circle at center, rgba(149, 213, 178, 0.08), transparent 70%);
 }
 
 /* Glassmorphism Cards */
