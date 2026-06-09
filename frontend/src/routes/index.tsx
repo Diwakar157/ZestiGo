@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Clock, ShieldCheck, Truck } from "lucide-react";
-import heroFood from "@/assets/hero-food.jpg";
+import heroImage from "@/assets/hero/zestigo-hero.png";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryCard } from "@/components/CategoryCard";
 import { RestaurantCard } from "@/components/RestaurantCard";
@@ -99,11 +99,9 @@ function Landing() {
             {/* Image Wrapper */}
             <div className="relative w-full max-w-[700px] z-10 flex justify-center lg:justify-end">
               <img
-                src={heroFood}
-                alt="Zestigo food delivery"
-                width={1280}
-                height={1024}
-                className="w-full h-auto max-w-[700px] rounded-[24px] shadow-[0_25px_50px_rgba(0,0,0,0.08)] object-contain"
+                src={heroImage}
+                alt="Zestigo Food Delivery"
+                className="w-full h-auto object-contain rounded-3xl shadow-[0_25px_50px_rgba(0,0,0,0.08)]"
               />
             </div>
           </div>
