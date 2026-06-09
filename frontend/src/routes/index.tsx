@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Clock, ShieldCheck, Truck } from "lucide-react";
-import heroImage from "@/assets/hero/zestigo-hero.png";
+import heroImage from "@/assets/hero/zestigo-hero.jpg";
 import { SearchBar } from "@/components/SearchBar";
 import { CategoryCard } from "@/components/CategoryCard";
 import { RestaurantCard } from "@/components/RestaurantCard";
