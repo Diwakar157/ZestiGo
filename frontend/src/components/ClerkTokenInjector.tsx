@@ -21,9 +21,10 @@ export function ClerkTokenInjector() {
   useEffect(() => {
     if (!isSignedIn || !user) return;
 
+    const fallbackName = user.fullName || user.firstName || user.username || user.primaryEmailAddress?.emailAddress?.split("@")[0] || "Zestigo User";
     const payload = {
       clerkId: user.id,
-      name: user.fullName ?? user.firstName ?? "",
+      name: fallbackName,
       email: user.primaryEmailAddress?.emailAddress ?? "",
       phone: user.primaryPhoneNumber?.phoneNumber ?? "",
       avatar: user.imageUrl ?? "",

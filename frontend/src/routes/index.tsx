@@ -64,6 +64,12 @@ function Landing() {
 
   return (
     <div className="bg-background">
+      {/* Diagnostics banner */}
+      <div className="mx-auto max-w-7xl px-4 py-2 mt-4 bg-amber-50 border border-amber-200 rounded-xl text-xs font-mono text-amber-800">
+        <b>[Diagnostics]</b> Categories: {categories ? `Loaded (${categories.length})` : "Pending/Error"} | 
+        Popular Restaurants: {popular ? `Loaded (${popular.length})` : "Pending/Error"} | 
+        Featured Dishes: {featured ? `Loaded (${featured.length})` : "Pending/Error"}
+      </div>
       {/* Hero — Cinematic full-bleed background */}
       <section className="hero-cinematic relative overflow-hidden flex items-center" style={{ minHeight: "85vh" }}>
         {/* Background image — fills the entire hero */}

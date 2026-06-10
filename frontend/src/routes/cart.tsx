@@ -90,7 +90,20 @@ function CartPage() {
             <span>Total</span>
             <span>{formatCurrency(total)}</span>
           </div>
-          <Button block size="lg" className="mt-5" onClick={() => navigate({ to: "/checkout" })}>
+          <Button
+            block
+            size="lg"
+            className="mt-5"
+            onClick={() =>
+              navigate({
+                to: "/checkout",
+                search: {
+                  discount,
+                  couponCode: code,
+                },
+              })
+            }
+          >
             Proceed to checkout
           </Button>
         </aside>

@@ -15,7 +15,13 @@ export function CartItem({ item }: { item: CartItemType }) {
         <p className="text-sm text-muted-foreground">{formatCurrency(food.price)}</p>
         <div className="mt-2 inline-flex items-center gap-3 rounded-full bg-secondary px-2 py-1">
           <button
-            onClick={() => updateQuantity(food.id, quantity - 1)}
+            onClick={() => {
+              if (quantity === 1) {
+                removeItem(food.id);
+              } else {
+                updateQuantity(food.id, quantity - 1);
+              }
+            }}
             aria-label="Decrease quantity"
             className="flex size-7 items-center justify-center rounded-full bg-card text-foreground shadow-soft transition-transform active:scale-90"
           >

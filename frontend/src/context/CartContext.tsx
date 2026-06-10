@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@clerk/tanstack-react-start";
 import { cartService } from "@/services/cartService";
 import type { CartItem, FoodItem } from "@/utils/types";
 
@@ -17,18 +18,26 @@ const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
-    cartService.getCart().then(setItems).catch(() => {});
-  }, []);
+    if (isSignedIn) {
+      cartService.getCart().then(setItems).catch(() => {});
+    } else {
+      setItems([]);
+    }
+  }, [isSignedIn]);
 
   async function addItem(food: FoodItem, quantity = 1) {
+    console.log("Adding item:", food.id);
     try {
       const next = await cartService.addItem(food.id, quantity);
+      console.log("Cart API Response:", next);
       setItems(next);
-      toast.success(`${food.name} added to cart`);
-    } catch {
-      toast.error("Failed to add item to cart");
+      toast.success("Added to cart");
+    } catch (error) {
+      console.error("Cart Error:", error);
+      toast.error("Failed to add item");
     }
   }
 

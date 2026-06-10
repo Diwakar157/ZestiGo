@@ -11,6 +11,10 @@ import { orderService } from "@/services/orderService";
 import { classNames, formatCurrency } from "@/utils/format";
 
 export const Route = createFileRoute("/checkout")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    discount: Number(s.discount) || 0,
+    couponCode: (s.couponCode as string) || "",
+  }),
   head: () => ({ meta: [{ title: "Checkout — Zestigo" }] }),
   component: () => (
     <ProtectedRoute>
@@ -28,6 +32,7 @@ const methodIcons: Record<string, LucideIcon> = {
 
 function Checkout() {
   const { items, subtotal, clearCart } = useCart();
+  const { discount, couponCode } = Route.useSearch();
   const navigate = useNavigate();
   const [address, setAddress] = useState("");
   const [method, setMethod] = useState("");
@@ -49,20 +54,28 @@ function Checkout() {
     if (methods?.length && !method) setMethod(methods[0].id);
   }, [methods, method]);
 
-  const total = subtotal + (items.length ? 40 : 0) + subtotal * 0.05;
+  const deliveryFee = items.length ? 40 : 0;
+  const tax = subtotal * 0.05;
+  const total = Math.max(0, subtotal + deliveryFee + tax - discount);
 
   async function placeOrder() {
     setPlacing(true);
-    const addr = addresses?.find((a) => a.id === address);
-    await orderService.createOrder({
-      items,
-      total,
-      address: addr?.line ?? "",
-      restaurantName: items[0]?.food.name ?? "Zestigo",
-    });
-    clearCart();
-    toast.success("Order placed! 🎉");
-    navigate({ to: "/orders" });
+    try {
+      const addr = addresses?.find((a) => a.id === address);
+      await orderService.createOrder({
+        items,
+        total,
+        address: addr?.line ?? "",
+        restaurantName: items[0]?.food.name ?? "Zestigo",
+      });
+      await clearCart();
+      toast.success("Order placed! 🎉");
+      navigate({ to: "/orders" });
+    } catch (error) {
+      console.error("Failed to place order:", error);
+      toast.error("Failed to place order. Please try again.");
+      setPlacing(false);
+    }
   }
 
   return (
@@ -119,7 +132,7 @@ function Checkout() {
         </div>
         <aside className="h-fit rounded-3xl bg-card p-6 shadow-card">
           <h2 className="text-lg font-semibold text-foreground">Order summary</h2>
-          <ul className="mt-4 space-y-2 text-sm">
+          <ul className="mt-4 space-y-2 text-sm border-b border-border pb-4">
             {items.map((i) => (
               <li key={i.food.id} className="flex justify-between text-muted-foreground">
                 <span>
@@ -129,6 +142,26 @@ function Checkout() {
               </li>
             ))}
           </ul>
+          <dl className="mt-4 space-y-2 text-sm text-muted-foreground">
+            <div className="flex justify-between">
+              <span>Subtotal</span>
+              <span className="text-foreground font-medium">{formatCurrency(subtotal)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Delivery fee</span>
+              <span className="text-foreground font-medium">{formatCurrency(deliveryFee)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>GST (5%)</span>
+              <span className="text-foreground font-medium">{formatCurrency(tax)}</span>
+            </div>
+            {discount > 0 && (
+              <div className="flex justify-between text-primary font-medium">
+                <span>Discount {couponCode ? `(${couponCode})` : ""}</span>
+                <span>-{formatCurrency(discount)}</span>
+              </div>
+            )}
+          </dl>
           <div className="mt-4 flex items-center justify-between border-t border-border pt-4 text-lg font-bold text-foreground">
             <span>Total</span>
             <span>{formatCurrency(total)}</span>

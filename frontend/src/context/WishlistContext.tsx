@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@clerk/tanstack-react-start";
 import { wishlistService, type Wishlist } from "@/services/wishlistService";
 
 interface WishlistContextValue {
@@ -12,10 +13,15 @@ const WishlistContext = createContext<WishlistContextValue | undefined>(undefine
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [wishlist, setWishlist] = useState<Wishlist>({ restaurants: [], foods: [] });
+  const { isSignedIn } = useAuth();
 
   useEffect(() => {
-    wishlistService.getWishlist().then(setWishlist);
-  }, []);
+    if (isSignedIn) {
+      wishlistService.getWishlist().then(setWishlist).catch(() => {});
+    } else {
+      setWishlist({ restaurants: [], foods: [] });
+    }
+  }, [isSignedIn]);
 
   function isFavorite(kind: "restaurants" | "foods", id: string) {
     return wishlist[kind].includes(id);

@@ -12,6 +12,8 @@ import com.zestigo.repository.CartItemRepository;
 import com.zestigo.repository.CartRepository;
 import com.zestigo.repository.FoodItemRepository;
 import com.zestigo.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class CartService {
+
+    private static final Logger log = LoggerFactory.getLogger(CartService.class);
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
@@ -62,9 +66,11 @@ public class CartService {
     }
 
     public List<CartItemDto> addItemToCart(String email, CartRequest request) {
+        log.info("Authenticated user: {}", email);
         Cart cart = getOrCreateCart(email);
         FoodItem foodItem = foodItemRepository.findById(request.getFoodItemId())
                 .orElseThrow(() -> new ResourceNotFoundException("Food item not found"));
+        log.info("Food item found: {}", foodItem.getId());
 
         Optional<CartItem> existingItemOpt = cartItemRepository.findByCartIdAndFoodItemId(cart.getId(), foodItem.getId());
 

@@ -7,9 +7,11 @@ import type { FoodItem } from "@/utils/types";
 import { RatingBadge } from "./RatingBadge";
 
 export function FoodCard({ food }: { food: FoodItem }) {
-  const { addItem } = useCart();
+  const { items, addItem, updateQuantity, removeItem } = useCart();
   const { isFavorite, toggleFavorite } = useWishlist();
   const fav = isFavorite("foods", food.id);
+  const cartItem = items.find((item) => item.food.id === food.id);
+  const quantityInCart = cartItem ? cartItem.quantity : 0;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-3xl bg-card shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-card">
@@ -56,14 +58,43 @@ export function FoodCard({ food }: { food: FoodItem }) {
         <p className="line-clamp-2 text-sm text-muted-foreground">{food.description}</p>
         <div className="mt-auto flex items-center justify-between pt-2">
           <span className="text-lg font-bold text-primary">{formatCurrency(food.price)}</span>
-          <button
-            type="button"
-            onClick={() => addItem(food)}
-            aria-label={`Add ${food.name} to cart`}
-            className="flex size-10 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-soft transition-all hover:bg-primary-glow active:scale-95"
-          >
-            <Plus className="size-5" />
-          </button>
+          {quantityInCart === 0 ? (
+            <button
+              type="button"
+              onClick={() => addItem(food)}
+              className="flex h-9 px-6 items-center justify-center rounded-full bg-[#2F7D57] text-white font-semibold text-sm shadow-soft hover:bg-[#256344] active:scale-95 transition-all cursor-pointer"
+            >
+              ADD
+            </button>
+          ) : (
+            <div className="flex h-9 items-center justify-between rounded-full bg-[#2F7D57] text-white font-semibold text-sm shadow-soft overflow-hidden min-w-[90px]">
+              <button
+                type="button"
+                onClick={() => {
+                  if (quantityInCart === 1) {
+                    removeItem(food.id);
+                  } else {
+                    updateQuantity(food.id, quantityInCart - 1);
+                  }
+                }}
+                className="flex size-9 items-center justify-center hover:bg-[#256344] transition-colors cursor-pointer text-lg font-bold"
+                aria-label="Decrease quantity"
+              >
+                -
+              </button>
+              <span className="px-2 w-4 text-center select-none">{quantityInCart}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  updateQuantity(food.id, quantityInCart + 1);
+                }}
+                className="flex size-9 items-center justify-center hover:bg-[#256344] transition-colors cursor-pointer text-lg font-bold"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

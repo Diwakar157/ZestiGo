@@ -162,9 +162,10 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || "pk_test_ZW5oYW5jZWQtbGFyay0yOC5jbGVyay5hY2NvdW50cy5kZXYk";
 
   return (
-    <ClerkProvider publishableKey={import.meta.env.VITE_CLERK_PUBLISHABLE_KEY}>
+    <ClerkProvider publishableKey={publishableKey}>
       <ClerkTokenInjector />
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>

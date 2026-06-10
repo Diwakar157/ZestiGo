@@ -4,6 +4,8 @@ import com.zestigo.dto.CartItemDto;
 import com.zestigo.dto.CartRequest;
 import com.zestigo.service.CartService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @RequestMapping("/api/cart")
 public class CartController {
 
+    private static final Logger log = LoggerFactory.getLogger(CartController.class);
     private final CartService cartService;
 
     public CartController(CartService cartService) {
@@ -28,6 +31,8 @@ public class CartController {
 
     @PostMapping("/items")
     public ResponseEntity<List<CartItemDto>> addItem(Principal principal, @Valid @RequestBody CartRequest request) {
+        log.info("Add to cart request received");
+        log.info("Food Item ID: {}", request.getFoodItemId());
         List<CartItemDto> cart = cartService.addItemToCart(principal.getName(), request);
         return ResponseEntity.ok(cart);
     }

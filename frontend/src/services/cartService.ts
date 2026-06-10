@@ -12,11 +12,21 @@ export const cartService = {
   },
 
   async addItem(foodItemId: string, quantity = 1): Promise<CartItem[]> {
-    const response = await apiClient.post<CartItem[]>("/api/cart/items", {
-      foodItemId,
-      quantity,
-    });
-    return response.data;
+    console.log("ADD CLICKED");
+    console.log("Food Item ID:", foodItemId);
+    try {
+      const response = await apiClient.post<CartItem[]>("/api/cart/items", {
+        foodItemId,
+        quantity,
+      });
+      console.log("Cart Response:", response);
+      return response.data;
+    } catch (error: any) {
+      console.error("Cart Error:", error);
+      console.error("Status:", error.response?.status);
+      console.error("Response:", error.response?.data);
+      throw error;
+    }
   },
 
   async removeItem(foodItemId: string): Promise<CartItem[]> {
