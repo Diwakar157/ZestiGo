@@ -30,6 +30,7 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+
 const perks = [
   {
     icon: Truck,
@@ -64,78 +65,56 @@ function Landing() {
 
   return (
     <div className="bg-background">
-      {/* Diagnostics banner */}
-      <div className="mx-auto max-w-7xl px-4 py-2 mt-4 bg-amber-50 border border-amber-200 rounded-xl text-xs font-mono text-amber-800">
-        <b>[Diagnostics]</b> Categories: {categories ? `Loaded (${categories.length})` : "Pending/Error"} | 
-        Popular Restaurants: {popular ? `Loaded (${popular.length})` : "Pending/Error"} | 
-        Featured Dishes: {featured ? `Loaded (${featured.length})` : "Pending/Error"}
-      </div>
-      {/* Hero — Cinematic full-bleed background */}
-      <section className="hero-cinematic relative overflow-hidden flex items-center" style={{ minHeight: "85vh" }}>
-        {/* Background image — fills the entire hero */}
-        <img
-          src={heroImage}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+      {/* ─── Hero — full-width background-image banner ─── */}
+      <section
+        className="hero-banner"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      >
+        {/* Gradient overlay: dark-green left → transparent right */}
+        <div className="hero-overlay" />
 
-        {/* Subtle dark scrim for overall contrast */}
-        <div className="absolute inset-0 bg-black/15 pointer-events-none" />
+        {/* Text content — floats above overlay */}
+        <div className="hero-inner">
+          <div className="hero-content animate-fade-in">
+            {/* Pill badge */}
+            <span className="hero-badge">🍛 Premium Food Delivery</span>
 
-        {/* Cinematic gradient overlay — dark left → clear right */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(12,35,25,0.95) 0%, rgba(12,35,25,0.85) 18%, rgba(12,35,25,0.65) 38%, rgba(12,35,25,0.30) 58%, rgba(12,35,25,0.00) 80%)",
-          }}
-        />
-
-        {/* Content — sits above overlays */}
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-20 sm:px-8 lg:py-28">
-          <div className="max-w-xl animate-fade-in">
-            {/* Tagline pill */}
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 px-4 py-1.5 text-xs font-semibold tracking-wider text-white/90 uppercase mb-6">
-              🍛 Premium Food Delivery
-            </span>
-
-            <h1 className="text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl">
-              Fresh Food{" "}
-              <br className="hidden sm:inline" />
-              <span className="text-[#95D5B2]">Delivered Faster</span>
+            <h1 className="hero-heading">
+              Fresh Food
+              <br />
+              <span className="hero-heading-accent">Delivered Faster</span>
             </h1>
 
-            <p className="mt-6 max-w-md text-base leading-relaxed text-white/75 sm:text-lg">
+            <p className="hero-subtext">
               Discover top-rated restaurants, exclusive offers, and lightning-fast
               delivery with Zestigo. Your next great meal is minutes away.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="mt-10 flex flex-wrap items-center gap-4">
+            {/* CTA buttons */}
+            <div className="hero-cta-row">
               <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
-                <button className="hero-btn-primary h-13 rounded-xl px-8 text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]">
+                <button className="hero-btn-primary" id="hero-order-now-btn">
                   Order Now
                 </button>
               </Link>
               <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
-                <button className="hero-btn-outline h-13 rounded-xl px-8 text-base font-semibold transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98]">
+                <button className="hero-btn-outline" id="hero-explore-btn">
                   Explore Restaurants
                 </button>
               </Link>
             </div>
 
             {/* Trust strip */}
-            <div className="mt-10 flex items-center gap-6 text-sm text-white/60">
-              <span className="flex items-center gap-1.5">
+            <div className="hero-trust-strip">
+              <span className="hero-trust-item">
                 <Truck className="size-4" /> 30 min delivery
               </span>
-              <span className="h-4 w-px bg-white/20" />
-              <span className="flex items-center gap-1.5">
+              <span className="hero-trust-divider" />
+              <span className="hero-trust-item">
                 <ShieldCheck className="size-4" /> Secure payments
               </span>
-              <span className="h-4 w-px bg-white/20" />
-              <span className="flex items-center gap-1.5">
+              <span className="hero-trust-divider" />
+              <span className="hero-trust-item">
                 <Clock className="size-4" /> Live tracking
               </span>
             </div>

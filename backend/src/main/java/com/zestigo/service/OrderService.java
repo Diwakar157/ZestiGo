@@ -23,16 +23,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final FoodItemRepository foodItemRepository;
-    private final PaymentRepository paymentRepository;
     private final CartService cartService;
 
     public OrderService(OrderRepository orderRepository, UserRepository userRepository,
-                        FoodItemRepository foodItemRepository, PaymentRepository paymentRepository,
-                        CartService cartService) {
+                        FoodItemRepository foodItemRepository, CartService cartService) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.foodItemRepository = foodItemRepository;
-        this.paymentRepository = paymentRepository;
         this.cartService = cartService;
     }
 
@@ -90,26 +87,34 @@ public class OrderService {
             order.getItems().add(orderItem);
         }
 
-        Order savedOrder = orderRepository.save(order);
-
-        // Process payment
+        // Process payment - create Payment entity and attach to Order
+        // BEFORE saving, so CascadeType.ALL handles persistence in one operation.
+        // Do NOT call paymentRepository.save() separately — that causes
+        // NonUniqueObjectException because Hibernate cascade-persists the same
+        // Payment entity a second time when it flushes the Order.
         String payMethod = request.getPaymentMethod();
         if (payMethod == null) {
             payMethod = "card";
         }
         Payment payment = Payment.builder()
                 .id(UUID.randomUUID().toString())
-                .order(savedOrder)
+                .order(order)
                 .paymentMethod(payMethod)
-                .status("cod".equalsIgnoreCase(payMethod) ? "PENDING" : "COMPLETED")
-                .transactionId(UUID.randomUUID().toString())
+                .paymentStatus(PaymentStatus.PENDING)
+                .amount(order.getTotalAmount())
+                .currency("INR")
                 .build();
 
-        paymentRepository.save(payment);
-        savedOrder.setPayment(payment);
+        // Set payment on order so cascade persists it automatically
+        order.setPayment(payment);
 
-        // Clear cart
-        cartService.clearCart(email);
+        // Save order — cascades to Payment and OrderItems
+        Order savedOrder = orderRepository.save(order);
+
+        // Clear cart immediately for Cash on Delivery (COD); online carts are cleared upon successful verification
+        if ("cod".equalsIgnoreCase(payMethod)) {
+            cartService.clearCart(email);
+        }
 
         return OrderMapper.toDto(savedOrder);
     }

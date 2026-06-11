@@ -10,6 +10,7 @@ public class AddressMapper {
                 .id(address.getId())
                 .label(address.getLabel())
                 .line(address.getLine())
+                .isDefault(address.isDefault())
                 .build();
     }
 }

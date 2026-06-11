@@ -43,4 +43,18 @@ export const authService = {
     const response = await apiClient.get<Address[]>("/api/users/me/addresses");
     return response.data;
   },
+
+  async addAddress(address: { label: string; line: string; isDefault?: boolean }): Promise<Address> {
+    const response = await apiClient.post<Address>("/api/users/me/addresses", address);
+    return response.data;
+  },
+
+  async updateAddress(id: string, address: { label: string; line: string; isDefault?: boolean }): Promise<Address> {
+    const response = await apiClient.put<Address>(`/api/users/me/addresses/${id}`, address);
+    return response.data;
+  },
+
+  async deleteAddress(id: string): Promise<void> {
+    await apiClient.delete(`/api/users/me/addresses/${id}`);
+  },
 };

@@ -130,6 +130,6 @@ INSERT INTO coupons (code, description, type, value, min_order, active) VALUES
 ('FESTIVE25', 'Festival special: 25% off your order', 'percent', 25.00, 249.00, TRUE);
 
 -- Seed saved addresses for the demo user
-INSERT INTO addresses (id, user_id, label, line) VALUES
-('a1', 'u1', 'Home', '12, 4th Block, Koramangala, Bengaluru'),
-('a2', 'u1', 'Work', 'Prestige Tech Park, Marathahalli, Bengaluru');
+INSERT INTO addresses (id, user_id, label, line, is_default) VALUES
+('a1', 'u1', 'Home', '12, 4th Block, Koramangala, Bengaluru', TRUE),
+('a2', 'u1', 'Work', 'Prestige Tech Park, Marathahalli, Bengaluru', FALSE);

@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/clerk-sync").permitAll()
                 .requestMatchers("/api/restaurants/**", "/api/foods/**", "/api/content/**").permitAll()
                 .requestMatchers("/login/oauth2/**", "/oauth2/**").permitAll()
+                .requestMatchers("/api/payments/webhook").permitAll()
+                .requestMatchers("/api/payments/**").authenticated()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

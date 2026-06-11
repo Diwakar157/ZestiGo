@@ -76,6 +76,7 @@ export interface Address {
   id: string;
   label: string;
   line: string;
+  isDefault: boolean;
 }
 
 export interface PaymentMethod {

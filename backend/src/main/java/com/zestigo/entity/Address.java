@@ -29,17 +29,21 @@ public class Address {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String line;
 
+    @Column(name = "is_default", nullable = false)
+    private boolean isDefault;
+
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     public Address() {
     }
 
-    public Address(String id, User user, String label, String line, LocalDateTime createdAt) {
+    public Address(String id, User user, String label, String line, boolean isDefault, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.label = label;
         this.line = line;
+        this.isDefault = isDefault;
         this.createdAt = createdAt;
     }
 
@@ -61,6 +65,9 @@ public class Address {
     public String getLine() { return line; }
     public void setLine(String line) { this.line = line; }
 
+    public boolean isDefault() { return isDefault; }
+    public void setDefault(boolean isDefault) { this.isDefault = isDefault; }
+
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
@@ -74,14 +81,16 @@ public class Address {
         private User user;
         private String label;
         private String line;
+        private boolean isDefault;
 
         public AddressBuilder id(String id) { this.id = id; return this; }
         public AddressBuilder user(User user) { this.user = user; return this; }
         public AddressBuilder label(String label) { this.label = label; return this; }
         public AddressBuilder line(String line) { this.line = line; return this; }
+        public AddressBuilder isDefault(boolean isDefault) { this.isDefault = isDefault; return this; }
 
         public Address build() {
-            return new Address(id, user, label, line, null);
+            return new Address(id, user, label, line, isDefault, null);
         }
     }
 }

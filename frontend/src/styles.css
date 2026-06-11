@@ -243,48 +243,230 @@
   animation: float-delayed 5s ease-in-out infinite;
 }
 
-/* ─── Cinematic Hero Section ─── */
-.hero-cinematic {
-  /* Edge-to-edge, no border-radius */
-  border-radius: 0;
+/* ─────────────────────────────────────────────
+   HERO BANNER — Full-width background-image
+   Swiggy / Zomato / Uber Eats style
+───────────────────────────────────────────── */
+
+.hero-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 75vh;
+  width: 100%;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* Primary CTA — vibrant green */
+/* Gradient overlay */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 40, 20, 0.88) 0%,
+    rgba(0, 40, 20, 0.60) 35%,
+    rgba(0, 40, 20, 0.18) 65%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Outer wrapper — keeps content centred within max-width */
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 120px 48px 72px;
+}
+
+/* Content column — left-aligned, max half-width so image shows on right */
+.hero-content {
+  max-width: 560px;
+  width: 100%;
+}
+
+/* Pill badge */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.90);
+  margin-bottom: 22px;
+}
+
+/* Heading */
+.hero-heading {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 800;
+  line-height: 1.10;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0 0 20px;
+}
+
+.hero-heading-accent {
+  color: #95D5B2;
+}
+
+/* Subtext */
+.hero-subtext {
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  line-height: 1.72;
+  color: rgba(255, 255, 255, 0.70);
+  margin: 0 0 36px;
+  max-width: 460px;
+}
+
+/* CTA row */
+.hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+/* Primary button */
 .hero-btn-primary {
-  background: linear-gradient(135deg, #2F7D5A 0%, #4F9D75 100%);
+  background: linear-gradient(135deg, #2F7D5A 0%, #52AC7E 100%);
   color: #fff;
   border: none;
+  border-radius: 14px;
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(47, 125, 90, 0.4);
+  box-shadow: 0 6px 24px rgba(47, 125, 90, 0.45);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 .hero-btn-primary:hover {
-  background: linear-gradient(135deg, #3a8f67 0%, #5aad82 100%);
-  box-shadow: 0 6px 28px rgba(47, 125, 90, 0.55);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(47, 125, 90, 0.60);
 }
+.hero-btn-primary:active { transform: scale(0.97); }
 
-/* Secondary CTA — glass outline */
+/* Outline button */
 .hero-btn-outline {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   color: #fff;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border: 1.5px solid rgba(255, 255, 255, 0.30);
+  border-radius: 14px;
+  padding: 14px 32px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
   cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 .hero-btn-outline:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.50);
+  transform: translateY(-2px);
+}
+.hero-btn-outline:active { transform: scale(0.97); }
+
+/* Trust strip */
+.hero-trust-strip {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.hero-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.52);
+}
+.hero-trust-divider {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.20);
 }
 
-/* Dark mode adjustments */
+/* ── Dark mode tweaks ── */
 .dark .hero-btn-primary {
   background: linear-gradient(135deg, #4F9D75 0%, #6BB890 100%);
-  box-shadow: 0 4px 20px rgba(79, 157, 117, 0.3);
+  box-shadow: 0 6px 24px rgba(79, 157, 117, 0.35);
 }
-.dark .hero-btn-outline {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.15);
+
+/* ── Tablet (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .hero-inner {
+    padding: 110px 36px 64px;
+  }
+  .hero-content {
+    max-width: 480px;
+  }
 }
+
+/* ── Mobile (≤ 768px) ── */
+@media (max-width: 768px) {
+  .hero-banner {
+    min-height: 70vh;
+    /* On mobile keep gradient stronger so small text stays readable */
+    background-position: 70% center;
+  }
+  .hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 40, 20, 0.92) 0%,
+      rgba(0, 40, 20, 0.80) 50%,
+      rgba(0, 40, 20, 0.50) 100%
+    );
+  }
+  .hero-inner {
+    padding: 100px 24px 56px;
+  }
+  .hero-content {
+    max-width: 100%;
+  }
+  .hero-heading {
+    font-size: 2.25rem;
+  }
+}
+
+/* ── Small mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+  .hero-banner {
+    min-height: 65vh;
+    background-position: 80% center;
+  }
+  .hero-heading {
+    font-size: 1.9rem;
+  }
+  .hero-subtext {
+    font-size: 0.9rem;
+  }
+  .hero-btn-primary,
+  .hero-btn-outline {
+    padding: 12px 24px;
+    font-size: 0.925rem;
+    border-radius: 12px;
+  }
+  .hero-trust-strip {
+    gap: 12px;
+  }
+}
+
 
 /* Glassmorphism Cards */
 .glass-card {
@@ -300,3 +482,4 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
+

@@ -47,6 +47,11 @@ clerk:
   publishable-key: ${CLERK_PUBLISHABLE_KEY:pk_test_ZW5oYW5jZWQtbGFyay0yOC5jbGVyay5hY2NvdW50cy5kZXYk}
   secret-key: ${CLERK_SECRET_KEY:sk_test_xrk0XlISEyZMckh9sdrnvS1KKQfq3card3RLHTLzZj}
 
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_SznqZyRwZ67iw3}
+  key-secret: ${RAZORPAY_KEY_SECRET:tNSKByoB0RwC3OPUo2cE1T7K}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:default_webhook_secret_123}
+
 logging:
   level:
     org.springframework.web: DEBUG

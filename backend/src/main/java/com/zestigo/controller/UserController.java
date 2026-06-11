@@ -49,6 +49,12 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/me/addresses/{id}")
+    public ResponseEntity<AddressDto> updateAddress(Principal principal, @PathVariable("id") String id, @Valid @RequestBody AddressDto addressDto) {
+        AddressDto updatedAddress = userService.updateAddress(principal.getName(), id, addressDto);
+        return ResponseEntity.ok(updatedAddress);
+    }
+
     @PostMapping("/clerk-sync")
     public ResponseEntity<UserDto> clerkSync(
             @RequestHeader(value = "Authorization", required = false) String authHeader,

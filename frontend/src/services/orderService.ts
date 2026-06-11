@@ -6,6 +6,7 @@ export interface CreateOrderPayload {
   total: number;
   address: string;
   restaurantName: string;
+  paymentMethod?: string;
 }
 
 export const orderService = {

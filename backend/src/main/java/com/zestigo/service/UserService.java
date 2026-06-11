@@ -114,11 +114,24 @@ public class UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        List<Address> existing = addressRepository.findByUserId(user.getId());
+        boolean isDefault = existing.isEmpty() || addressDto.isDefault();
+
+        if (isDefault) {
+            for (Address addr : existing) {
+                if (addr.isDefault()) {
+                    addr.setDefault(false);
+                    addressRepository.save(addr);
+                }
+            }
+        }
+
         Address address = Address.builder()
                 .id(UUID.randomUUID().toString())
                 .user(user)
                 .label(addressDto.getLabel())
                 .line(addressDto.getLine())
+                .isDefault(isDefault)
                 .build();
 
         Address savedAddress = addressRepository.save(address);
@@ -136,6 +149,50 @@ public class UserService {
             throw new BadRequestException("Unauthorised access to delete address");
         }
 
+        boolean wasDefault = address.isDefault();
         addressRepository.delete(address);
+
+        if (wasDefault) {
+            List<Address> remaining = addressRepository.findByUserId(user.getId()).stream()
+                    .filter(a -> !a.getId().equals(addressId))
+                    .collect(Collectors.toList());
+            if (!remaining.isEmpty()) {
+                Address newDefault = remaining.get(0);
+                newDefault.setDefault(true);
+                addressRepository.save(newDefault);
+            }
+        }
+    }
+
+    public AddressDto updateAddress(String email, String addressId, AddressDto addressDto) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address not found"));
+
+        if (!address.getUser().getId().equals(user.getId())) {
+            throw new BadRequestException("Unauthorised access to update address");
+        }
+
+        boolean makeDefault = addressDto.isDefault();
+        if (makeDefault && !address.isDefault()) {
+            List<Address> existing = addressRepository.findByUserId(user.getId());
+            for (Address addr : existing) {
+                if (!addr.getId().equals(addressId) && addr.isDefault()) {
+                    addr.setDefault(false);
+                    addressRepository.save(addr);
+                }
+            }
+            address.setDefault(true);
+        } else if (!makeDefault && address.isDefault()) {
+            // Keep it default if it's the only one, or allow setting to false
+            address.setDefault(false);
+        }
+
+        address.setLabel(addressDto.getLabel());
+        address.setLine(addressDto.getLine());
+        Address savedAddress = addressRepository.save(address);
+        return AddressMapper.toDto(savedAddress);
     }
 }

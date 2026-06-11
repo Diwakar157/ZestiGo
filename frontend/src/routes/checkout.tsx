@@ -2,13 +2,18 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CreditCard, Home, Wallet, type LucideIcon } from "lucide-react";
+import { CreditCard, Home, Wallet, type LucideIcon, MapPin, Plus } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Button } from "@/components/Button";
 import { useCart } from "@/context/CartContext";
 import { authService } from "@/services/authService";
 import { orderService } from "@/services/orderService";
 import { classNames, formatCurrency } from "@/utils/format";
+import { useUser } from "@clerk/tanstack-react-start";
+import { loadRazorpayScript } from "@/features/payment/utils/razorpay";
+import { paymentService } from "@/features/payment/services/paymentService";
+import { InputField } from "@/components/InputField";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/checkout")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -34,11 +39,12 @@ function Checkout() {
   const { items, subtotal, clearCart } = useCart();
   const { discount, couponCode } = Route.useSearch();
   const navigate = useNavigate();
+  const { user } = useUser();
   const [address, setAddress] = useState("");
   const [method, setMethod] = useState("");
   const [placing, setPlacing] = useState(false);
 
-  const { data: addresses } = useQuery({
+  const { data: addresses, refetch } = useQuery({
     queryKey: ["addresses"],
     queryFn: () => authService.getAddresses(),
   });
@@ -47,9 +53,18 @@ function Checkout() {
     queryFn: () => orderService.getPaymentMethods(),
   });
 
+  // Handle auto-selecting default or first address
   useEffect(() => {
-    if (addresses?.length && !address) setAddress(addresses[0].id);
+    if (addresses?.length) {
+      const defaultAddress = addresses.find((a) => a.isDefault);
+      if (defaultAddress) {
+        setAddress(defaultAddress.id);
+      } else if (!address || !addresses.some((a) => a.id === address)) {
+        setAddress(addresses[0].id);
+      }
+    }
   }, [addresses, address]);
+
   useEffect(() => {
     if (methods?.length && !method) setMethod(methods[0].id);
   }, [methods, method]);
@@ -60,21 +75,148 @@ function Checkout() {
 
   async function placeOrder() {
     setPlacing(true);
+    let createdOrder: any = null;
     try {
       const addr = addresses?.find((a) => a.id === address);
-      await orderService.createOrder({
+      if (!addr) {
+        toast.error("Please select a delivery address.");
+        setPlacing(false);
+        return;
+      }
+
+      // 1. Create order on backend
+      console.log("[Checkout] Step 1: Creating order on backend...");
+      createdOrder = await orderService.createOrder({
         items,
         total,
-        address: addr?.line ?? "",
+        address: addr.line,
         restaurantName: items[0]?.food.name ?? "Zestigo",
+        paymentMethod: method,
       });
-      await clearCart();
-      toast.success("Order placed! 🎉");
-      navigate({ to: "/orders" });
-    } catch (error) {
-      console.error("Failed to place order:", error);
-      toast.error("Failed to place order. Please try again.");
+      console.log("[Checkout] Step 1 DONE: Order created:", createdOrder);
+
+      // 2. Handle Cash on Delivery (COD)
+      if (method === "cod") {
+        await clearCart();
+        toast.success("Order placed! 🎉");
+        navigate({ to: "/orders" });
+        return;
+      }
+
+      // 3. Handle online payment (card/wallet) via Razorpay
+      console.log("[Checkout] Step 2: Loading Razorpay script...");
+      toast.loading("Initiating payment gateway...", { id: "checkout-payment" });
+
+      const scriptLoaded = await loadRazorpayScript();
+      console.log("[Checkout] Step 2 DONE: Razorpay script loaded:", scriptLoaded);
+      if (!scriptLoaded) {
+        toast.error("Failed to load Razorpay SDK. Please check your internet connection.", { id: "checkout-payment" });
+        navigate({ to: "/payment-failure", search: { orderId: createdOrder.id, amount: total } });
+        return;
+      }
+
+      console.log("[Checkout] Step 3: Calling create-order API for order:", createdOrder.id);
+      const rzpOrderResponse = await paymentService.createRazorpayOrder(createdOrder.id);
+      console.log("[Checkout] Step 3 DONE: Razorpay order response:", JSON.stringify(rzpOrderResponse));
+      const { razorpayOrderId, amount: rzpAmount, currency, razorpayKeyId } = rzpOrderResponse;
+
+      console.log("[Checkout] Step 4: Building Razorpay options...", {
+        key: razorpayKeyId,
+        amount: rzpAmount,
+        currency,
+        order_id: razorpayOrderId,
+      });
+
+      const options = {
+        key: razorpayKeyId,
+        amount: rzpAmount,
+        currency: currency,
+        name: "Zestigo",
+        description: `Order ID: ${createdOrder.id}`,
+        image: "/favicon.ico",
+        order_id: razorpayOrderId,
+        handler: async (response: any) => {
+          try {
+            console.log("[Checkout] Payment success callback:", response);
+            toast.loading("Verifying payment...", { id: "checkout-payment" });
+            await paymentService.verifyPayment({
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+
+            await clearCart();
+            toast.success("Order confirmed! 🎉", { id: "checkout-payment" });
+            navigate({
+              to: "/payment-success",
+              search: {
+                orderId: createdOrder.id,
+                paymentId: response.razorpay_payment_id,
+                amount: total,
+              },
+            });
+          } catch (err: any) {
+            console.error("[Checkout] Verification error:", err);
+            toast.error("Payment verification failed.", { id: "checkout-payment" });
+            navigate({ to: "/payment-failure", search: { orderId: createdOrder.id, amount: total } });
+          }
+        },
+        prefill: {
+          name: user?.fullName ?? "",
+          email: user?.primaryEmailAddress?.emailAddress ?? "",
+          contact: user?.primaryPhoneNumber?.phoneNumber ?? "",
+        },
+        theme: {
+          color: "#2D6A4F",
+        },
+        modal: {
+          ondismiss: async () => {
+            console.log("[Checkout] Razorpay modal dismissed by user");
+            try {
+              await paymentService.failPayment({
+                razorpayOrderId,
+                errorMessage: "Payment cancelled by user",
+              });
+            } catch (err) {
+              console.error("[Checkout] Error reporting payment failure:", err);
+            } finally {
+              toast.error("Payment cancelled.", { id: "checkout-payment" });
+              navigate({ to: "/payment-failure", search: { orderId: createdOrder.id, amount: total } });
+            }
+          },
+        },
+      };
+
+      console.log("[Checkout] Step 5: Creating Razorpay instance and calling open()...");
+      const rzp = new (window as any).Razorpay(options);
+
+      rzp.on("payment.failed", async (response: any) => {
+        console.error("[Checkout] Payment failed in SDK:", response.error);
+        try {
+          await paymentService.failPayment({
+            razorpayOrderId,
+            errorMessage: response.error.description || "Payment failed",
+          });
+        } catch (err) {
+          console.error("[Checkout] Failed recording payment failure:", err);
+        }
+      });
+
+      toast.dismiss("checkout-payment");
+      rzp.open();
+      console.log("[Checkout] Step 5 DONE: rzp.open() called successfully");
+    } catch (error: any) {
+      console.error("[Checkout] FATAL: Failed to place order:", error);
+      console.error("[Checkout] Error details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message,
+      });
+      toast.error(error.response?.data?.message || "Failed to place order. Please try again.", { id: "checkout-payment" });
       setPlacing(false);
+      if (createdOrder) {
+        navigate({ to: "/payment-failure", search: { orderId: createdOrder.id, amount: total } });
+      }
     }
   }
 
@@ -84,27 +226,46 @@ function Checkout() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_320px]">
         <div className="space-y-8">
           <section>
-            <h2 className="mb-3 text-lg font-semibold text-foreground">Delivery address</h2>
-            <div className="space-y-3">
-              {addresses?.map((a) => (
-                <button
-                  key={a.id}
-                  onClick={() => setAddress(a.id)}
-                  className={classNames(
-                    "flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-all",
-                    address === a.id ? "border-primary bg-secondary" : "border-border bg-card",
-                  )}
-                >
-                  <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-primary">
-                    <Home className="size-5" />
-                  </span>
-                  <span>
-                    <span className="block font-medium text-foreground">{a.label}</span>
-                    <span className="block text-sm text-muted-foreground">{a.line}</span>
-                  </span>
-                </button>
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-semibold text-foreground">Delivery address</h2>
+              <button
+                onClick={() => navigate({ to: "/profile", search: { addAddress: true, redirectBack: "/checkout" } })}
+                className="flex items-center gap-1 rounded-lg bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary hover:bg-primary/20 transition-all cursor-pointer"
+              >
+                <Plus className="size-3.5" /> Add New
+              </button>
             </div>
+
+            {!addresses || addresses.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-border bg-card p-6 text-center">
+                <MapPin className="size-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm font-medium text-foreground mb-3">No delivery addresses found</p>
+                <Button size="sm" onClick={() => navigate({ to: "/profile", search: { addAddress: true, redirectBack: "/checkout" } })}>
+                  Add Address
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {addresses.map((a) => (
+                  <button
+                    key={a.id}
+                    onClick={() => setAddress(a.id)}
+                    className={classNames(
+                      "flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-all cursor-pointer",
+                      address === a.id ? "border-primary bg-secondary" : "border-border bg-card",
+                    )}
+                  >
+                    <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-primary">
+                      <Home className="size-5" />
+                    </span>
+                    <span>
+                      <span className="block font-medium text-foreground">{a.label}</span>
+                      <span className="block text-sm text-muted-foreground">{a.line}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </section>
           <section>
             <h2 className="mb-3 text-lg font-semibold text-foreground">Payment method</h2>
@@ -116,7 +277,7 @@ function Checkout() {
                     key={m.id}
                     onClick={() => setMethod(m.id)}
                     className={classNames(
-                      "flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-all",
+                      "flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-all cursor-pointer",
                       method === m.id ? "border-primary bg-secondary" : "border-border bg-card",
                     )}
                   >
@@ -170,10 +331,10 @@ function Checkout() {
             block
             size="lg"
             className="mt-5"
-            disabled={!items.length || placing}
+            disabled={!items.length || placing || !addresses?.length}
             onClick={placeOrder}
           >
-            {placing ? "Placing order..." : "Place order"}
+            {placing ? "Placing order..." : !addresses?.length ? "Add address to order" : "Place order"}
           </Button>
         </aside>
       </div>

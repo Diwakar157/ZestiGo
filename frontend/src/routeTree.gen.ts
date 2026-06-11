@@ -15,6 +15,9 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RestaurantsRouteImport } from './routes/restaurants'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PaymentSuccessRouteImport } from './routes/payment-success'
+import { Route as PaymentHistoryRouteImport } from './routes/payment-history'
+import { Route as PaymentFailureRouteImport } from './routes/payment-failure'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as OffersRouteImport } from './routes/offers'
 import { Route as LoginRouteImport } from './routes/login'
@@ -53,6 +56,21 @@ const RegisterRoute = RegisterRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentSuccessRoute = PaymentSuccessRouteImport.update({
+  id: '/payment-success',
+  path: '/payment-success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentHistoryRoute = PaymentHistoryRouteImport.update({
+  id: '/payment-history',
+  path: '/payment-history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentFailureRoute = PaymentFailureRouteImport.update({
+  id: '/payment-failure',
+  path: '/payment-failure',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OrdersRoute = OrdersRouteImport.update({
@@ -108,6 +126,9 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/offers': typeof OffersRoute
   '/orders': typeof OrdersRoute
+  '/payment-failure': typeof PaymentFailureRoute
+  '/payment-history': typeof PaymentHistoryRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/restaurants': typeof RestaurantsRoute
@@ -125,6 +146,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/offers': typeof OffersRoute
   '/orders': typeof OrdersRoute
+  '/payment-failure': typeof PaymentFailureRoute
+  '/payment-history': typeof PaymentHistoryRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/restaurants': typeof RestaurantsRoute
@@ -143,6 +167,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/offers': typeof OffersRoute
   '/orders': typeof OrdersRoute
+  '/payment-failure': typeof PaymentFailureRoute
+  '/payment-history': typeof PaymentHistoryRoute
+  '/payment-success': typeof PaymentSuccessRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/restaurants': typeof RestaurantsRoute
@@ -162,6 +189,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/offers'
     | '/orders'
+    | '/payment-failure'
+    | '/payment-history'
+    | '/payment-success'
     | '/profile'
     | '/register'
     | '/restaurants'
@@ -179,6 +209,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/offers'
     | '/orders'
+    | '/payment-failure'
+    | '/payment-history'
+    | '/payment-success'
     | '/profile'
     | '/register'
     | '/restaurants'
@@ -196,6 +229,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/offers'
     | '/orders'
+    | '/payment-failure'
+    | '/payment-history'
+    | '/payment-success'
     | '/profile'
     | '/register'
     | '/restaurants'
@@ -214,6 +250,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OffersRoute: typeof OffersRoute
   OrdersRoute: typeof OrdersRoute
+  PaymentFailureRoute: typeof PaymentFailureRoute
+  PaymentHistoryRoute: typeof PaymentHistoryRoute
+  PaymentSuccessRoute: typeof PaymentSuccessRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   RestaurantsRoute: typeof RestaurantsRoute
@@ -267,6 +306,27 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-success': {
+      id: '/payment-success'
+      path: '/payment-success'
+      fullPath: '/payment-success'
+      preLoaderRoute: typeof PaymentSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-history': {
+      id: '/payment-history'
+      path: '/payment-history'
+      fullPath: '/payment-history'
+      preLoaderRoute: typeof PaymentHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-failure': {
+      id: '/payment-failure'
+      path: '/payment-failure'
+      fullPath: '/payment-failure'
+      preLoaderRoute: typeof PaymentFailureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/orders': {
@@ -342,6 +402,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OffersRoute: OffersRoute,
   OrdersRoute: OrdersRoute,
+  PaymentFailureRoute: PaymentFailureRoute,
+  PaymentHistoryRoute: PaymentHistoryRoute,
+  PaymentSuccessRoute: PaymentSuccessRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   RestaurantsRoute: RestaurantsRoute,
