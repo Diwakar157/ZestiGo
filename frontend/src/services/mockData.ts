@@ -489,8 +489,8 @@ export const coupons: Coupon[] = [
 ];
 
 export const addresses: Address[] = [
-  { id: "a1", label: "Home", line: "12, 4th Block, Koramangala, Bengaluru" },
-  { id: "a2", label: "Work", line: "Prestige Tech Park, Marathahalli, Bengaluru" },
+  { id: "a1", label: "Home", line: "12, 4th Block, Koramangala, Bengaluru", isDefault: true, latitude: 12.9352, longitude: 77.6245, placeId: "ChIJF5-RgAkWrjsR1PMyoMEq37c" },
+  { id: "a2", label: "Work", line: "Prestige Tech Park, Marathahalli, Bengaluru", isDefault: false, latitude: 12.9591, longitude: 77.6974, placeId: "ChIJ2-N0xAUXrjsRKBqUYmPXQkE" },
 ];
 
 export const paymentMethods: PaymentMethod[] = [

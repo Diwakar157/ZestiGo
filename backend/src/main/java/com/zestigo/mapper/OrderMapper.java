@@ -18,10 +18,14 @@ public class OrderMapper {
                                 .build())
                         .collect(Collectors.toList()))
                 .total(order.getTotalAmount())
-                .status(order.getStatus())
+                .status(order.getStatus() != null ? order.getStatus().name() : null)
                 .createdAt(order.getCreatedAt().toString())
                 .restaurantName(order.getRestaurantName())
                 .address(order.getAddress())
+                .paymentMethod(order.getPayment() != null && order.getPayment().getPaymentMethod() != null 
+                        ? order.getPayment().getPaymentMethod().name() : null)
+                .paymentStatus(order.getPayment() != null && order.getPayment().getPaymentStatus() != null 
+                        ? order.getPayment().getPaymentStatus().name() : null)
                 .build();
     }
 }

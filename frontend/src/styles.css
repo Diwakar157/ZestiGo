@@ -252,7 +252,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  min-height: 75vh;
+  min-height: 85vh;
   width: 100%;
   overflow: hidden;
   background-size: cover;
@@ -266,10 +266,10 @@
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(0, 40, 20, 0.88) 0%,
-    rgba(0, 40, 20, 0.60) 35%,
-    rgba(0, 40, 20, 0.18) 65%,
-    transparent 100%
+    rgba(6, 78, 59, 0.88) 0%,
+    rgba(6, 78, 59, 0.65) 35%,
+    rgba(6, 78, 59, 0.15) 70%,
+    rgba(255, 255, 255, 0) 100%
   );
   pointer-events: none;
 }
@@ -281,7 +281,7 @@
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 120px 48px 72px;
+  padding: 120px 48px 112px;
 }
 
 /* Content column — left-aligned, max half-width so image shows on right */
@@ -316,7 +316,7 @@
   line-height: 1.10;
   letter-spacing: -0.02em;
   color: #ffffff;
-  margin: 0 0 20px;
+  margin: 0 0 2rem;
 }
 
 .hero-heading-accent {
@@ -328,7 +328,7 @@
   font-size: clamp(0.95rem, 1.5vw, 1.1rem);
   line-height: 1.72;
   color: rgba(255, 255, 255, 0.70);
-  margin: 0 0 36px;
+  margin: 0 0 2.5rem;
   max-width: 460px;
 }
 
@@ -381,6 +381,40 @@
 }
 .hero-btn-outline:active { transform: scale(0.97); }
 
+/* Explore button - premium pill styled */
+.hero-btn-explore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #064E3B 0%, #10B981 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 16px 40px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(6, 78, 59, 0.4);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+.hero-btn-explore:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(6, 78, 59, 0.55);
+  background: linear-gradient(135deg, #043e2f 0%, #059669 100%);
+}
+.hero-btn-explore:active {
+  transform: scale(0.97);
+}
+.hero-btn-explore svg {
+  transition: transform 0.2s ease;
+}
+.hero-btn-explore:hover svg {
+  transform: translateX(4px);
+}
+
 /* Trust strip */
 .hero-trust-strip {
   display: flex;
@@ -407,6 +441,13 @@
   background: linear-gradient(135deg, #4F9D75 0%, #6BB890 100%);
   box-shadow: 0 6px 24px rgba(79, 157, 117, 0.35);
 }
+.dark .hero-btn-explore {
+  background: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3);
+}
+.dark .hero-btn-explore:hover {
+  background: linear-gradient(135deg, #059669 0%, #059669 100%);
+}
 
 /* ── Tablet (≤ 1024px) ── */
 @media (max-width: 1024px) {
@@ -428,13 +469,13 @@
   .hero-overlay {
     background: linear-gradient(
       90deg,
-      rgba(0, 40, 20, 0.92) 0%,
-      rgba(0, 40, 20, 0.80) 50%,
-      rgba(0, 40, 20, 0.50) 100%
+      rgba(6, 78, 59, 0.95) 0%,
+      rgba(6, 78, 59, 0.80) 50%,
+      rgba(6, 78, 59, 0.40) 100%
     );
   }
   .hero-inner {
-    padding: 100px 24px 56px;
+    padding: 100px 24px 80px;
   }
   .hero-content {
     max-width: 100%;
@@ -447,7 +488,7 @@
 /* ── Small mobile (≤ 480px) ── */
 @media (max-width: 480px) {
   .hero-banner {
-    min-height: 65vh;
+    min-height: 70vh;
     background-position: 80% center;
   }
   .hero-heading {
@@ -461,6 +502,10 @@
     padding: 12px 24px;
     font-size: 0.925rem;
     border-radius: 12px;
+  }
+  .hero-btn-explore {
+    padding: 14px 30px;
+    font-size: 1rem;
   }
   .hero-trust-strip {
     gap: 12px;
@@ -482,4 +527,160 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
+
+/* ─────────────────────────────────────────────
+   GOOGLE MAPS — Address Picker Layout
+───────────────────────────────────────────── */
+
+/* Desktop: side-by-side map & street view */
+.zestigo-map-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  min-height: 360px;
+}
+
+.zestigo-map-panel,
+.zestigo-sv-panel {
+  min-height: 320px;
+  position: relative;
+}
+
+/* Mobile: stack panels full-width */
+@media (max-width: 640px) {
+  .zestigo-map-container {
+    grid-template-columns: 1fr;
+    min-height: 300px;
+  }
+
+  .zestigo-map-panel,
+  .zestigo-sv-panel {
+    min-height: 280px;
+  }
+}
+
+/* Loading skeleton for map panels */
+.zestigo-map-skeleton {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Leaflet map overrides — ZestiGo theming */
+.leaflet-container {
+  font-family: var(--font-sans) !important;
+  border-radius: 1rem;
+}
+
+.leaflet-control-attribution {
+  font-size: 0.65rem !important;
+  background: color-mix(in oklab, var(--card) 85%, transparent) !important;
+  color: var(--muted-foreground) !important;
+  border-radius: 0.5rem 0 0 0 !important;
+  backdrop-filter: blur(4px);
+  padding: 2px 6px !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--primary) !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12) !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom a {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 1rem !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: var(--secondary) !important;
+}
+
+/* Hide default Leaflet marker styling */
+.zestigo-leaflet-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Dark mode Leaflet overrides */
+.dark .leaflet-control-attribution {
+  background: color-mix(in oklab, var(--card) 90%, transparent) !important;
+}
+
+.dark .leaflet-control-zoom a {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+.dark .leaflet-control-zoom a:hover {
+  background: var(--secondary) !important;
+}
+
+
+/* Bottom transition overlays for natural blending */
+.hero-bottom-glow-radial {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(34, 197, 94, 0.18) 0%,
+    rgba(34, 197, 94, 0.08) 40%,
+    transparent 75%
+  );
+  z-index: 2;
+}
+
+.hero-bottom-blur-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 128px;
+  background: rgba(167, 243, 208, 0.1); /* emerald-200/10 */
+  filter: blur(64px); /* blur-3xl */
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hero-bottom-transition-green {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 192px; /* h-48 */
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(167, 243, 208, 0.2) 50%, /* emerald-200/20 */
+    #ECFDF5 100% /* emerald-50 */
+  );
+  z-index: 3;
+}
+
+
+
 

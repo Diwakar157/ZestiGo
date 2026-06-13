@@ -41,9 +41,10 @@ public class Payment {
     @Column(nullable = false, length = 10)
     private String currency;
 
-    @NotBlank
-    @Column(name = "payment_method", nullable = false, length = 50)
-    private String paymentMethod; // e.g. "upi", "card", "netbanking", "wallet", "cod"
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false, length = 30)
+    private PaymentMethod paymentMethod;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -66,7 +67,7 @@ public class Payment {
     }
 
     public Payment(String id, Order order, String razorpayOrderId, String razorpayPaymentId, String razorpaySignature,
-                   BigDecimal amount, String currency, String paymentMethod, PaymentStatus paymentStatus, String refundStatus,
+                   BigDecimal amount, String currency, PaymentMethod paymentMethod, PaymentStatus paymentStatus, String refundStatus,
                    LocalDateTime transactionTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.order = order;
@@ -125,8 +126,8 @@ public class Payment {
     public String getCurrency() { return currency; }
     public void setCurrency(String currency) { this.currency = currency; }
 
-    public String getPaymentMethod() { return paymentMethod; }
-    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+    public PaymentMethod getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; }
 
     public PaymentStatus getPaymentStatus() { return paymentStatus; }
     public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
@@ -156,7 +157,7 @@ public class Payment {
         private String razorpaySignature;
         private BigDecimal amount;
         private String currency = "INR";
-        private String paymentMethod;
+        private PaymentMethod paymentMethod;
         private PaymentStatus paymentStatus = PaymentStatus.PENDING;
         private String refundStatus = "NOT_REFUNDED";
         private LocalDateTime transactionTime;
@@ -168,7 +169,7 @@ public class Payment {
         public PaymentBuilder razorpaySignature(String razorpaySignature) { this.razorpaySignature = razorpaySignature; return this; }
         public PaymentBuilder amount(BigDecimal amount) { this.amount = amount; return this; }
         public PaymentBuilder currency(String currency) { this.currency = currency; return this; }
-        public PaymentBuilder paymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; return this; }
+        public PaymentBuilder paymentMethod(PaymentMethod paymentMethod) { this.paymentMethod = paymentMethod; return this; }
         public PaymentBuilder paymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; return this; }
         public PaymentBuilder refundStatus(String refundStatus) { this.refundStatus = refundStatus; return this; }
         public PaymentBuilder transactionTime(LocalDateTime transactionTime) { this.transactionTime = transactionTime; return this; }

@@ -11,6 +11,10 @@ public class AddressMapper {
                 .label(address.getLabel())
                 .line(address.getLine())
                 .isDefault(address.isDefault())
+                .latitude(address.getLatitude())
+                .longitude(address.getLongitude())
+                .placeId(address.getPlaceId())
                 .build();
     }
 }
+

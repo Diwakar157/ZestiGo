@@ -15,6 +15,7 @@ import { Button } from "./Button";
 const links = [
   { to: "/", label: "Home" },
   { to: "/restaurants", label: "Restaurants" },
+  { to: "/orders", label: "My Orders" },
   { to: "/offers", label: "Offers" },
   { to: "/support", label: "Support" },
 ] as const;

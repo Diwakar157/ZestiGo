@@ -19,6 +19,7 @@ import { ThemeProvider } from "../context/ThemeContext";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import { Toaster } from "../components/ui/sonner";
+import { FloatingTracker } from "../components/FloatingTracker";
 
 function NotFoundComponent() {
   return (
@@ -180,6 +181,7 @@ function RootComponent() {
                 <Footer />
               </div>
               <Toaster position="top-center" richColors />
+              <FloatingTracker />
             </WishlistProvider>
           </CartProvider>
         </ThemeProvider>

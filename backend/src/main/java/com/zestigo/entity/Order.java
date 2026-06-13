@@ -41,10 +41,10 @@ public class Order {
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
-    @NotBlank
-    @Pattern(regexp = "^(placed|preparing|dispatched|delivered|cancelled)$", message = "Status must be one of: placed, preparing, dispatched, delivered, cancelled")
-    @Column(nullable = false, length = 20)
-    private String status;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
+    private OrderStatus status;
 
     @NotBlank
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -67,7 +67,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(String id, User user, Restaurant restaurant, String restaurantName, BigDecimal totalAmount, String status, String address, List<OrderItem> items, Payment payment, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Order(String id, User user, Restaurant restaurant, String restaurantName, BigDecimal totalAmount, OrderStatus status, String address, List<OrderItem> items, Payment payment, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.user = user;
         this.restaurant = restaurant;
@@ -86,7 +86,7 @@ public class Order {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         if (this.status == null) {
-            this.status = "placed";
+            this.status = OrderStatus.PENDING_PAYMENT;
         }
     }
 
@@ -111,8 +111,8 @@ public class Order {
     public BigDecimal getTotalAmount() { return totalAmount; }
     public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public OrderStatus getStatus() { return status; }
+    public void setStatus(OrderStatus status) { this.status = status; }
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
@@ -140,7 +140,7 @@ public class Order {
         private Restaurant restaurant;
         private String restaurantName;
         private BigDecimal totalAmount;
-        private String status = "placed";
+        private OrderStatus status = OrderStatus.PENDING_PAYMENT;
         private String address;
         private List<OrderItem> items = new ArrayList<>();
         private Payment payment;
@@ -150,7 +150,7 @@ public class Order {
         public OrderBuilder restaurant(Restaurant restaurant) { this.restaurant = restaurant; return this; }
         public OrderBuilder restaurantName(String restaurantName) { this.restaurantName = restaurantName; return this; }
         public OrderBuilder totalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; return this; }
-        public OrderBuilder status(String status) { this.status = status; return this; }
+        public OrderBuilder status(OrderStatus status) { this.status = status; return this; }
         public OrderBuilder address(String address) { this.address = address; return this; }
         public OrderBuilder items(List<OrderItem> items) { this.items = items; return this; }
         public OrderBuilder payment(Payment payment) { this.payment = payment; return this; }

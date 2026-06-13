@@ -9,6 +9,8 @@ import { authService } from "@/services/authService";
 import { Button } from "@/components/Button";
 import { InputField } from "@/components/InputField";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AddressMapPicker, type SelectedLocation } from "@/features/maps/components/AddressMapPicker";
+import { MiniMapPreview } from "@/features/maps/components/MiniMapPreview";
 import type { Address } from "@/utils/types";
 
 export const Route = createFileRoute("/profile")({
@@ -33,6 +35,9 @@ function Profile() {
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
   const [label, setLabel] = useState("");
   const [line, setLine] = useState("");
+  const [latitude, setLatitude] = useState<number | undefined>(undefined);
+  const [longitude, setLongitude] = useState<number | undefined>(undefined);
+  const [placeId, setPlaceId] = useState<string | undefined>(undefined);
   const [saving, setSaving] = useState(false);
 
   const { data: addresses, refetch, isLoading } = useQuery({
@@ -52,7 +57,7 @@ function Profile() {
     const addr = addresses?.find((a) => a.id === id);
     if (!addr) return;
     try {
-      await authService.updateAddress(id, { label: addr.label, line: addr.line, isDefault: true });
+      await authService.updateAddress(id, { label: addr.label, line: addr.line, isDefault: true, latitude: addr.latitude, longitude: addr.longitude, placeId: addr.placeId });
       toast.success("Default address updated!");
       refetch();
     } catch (err) {
@@ -65,6 +70,9 @@ function Profile() {
     setEditingAddress(null);
     setLabel("");
     setLine("");
+    setLatitude(undefined);
+    setLongitude(undefined);
+    setPlaceId(undefined);
     setDialogOpen(true);
   };
 
@@ -72,7 +80,24 @@ function Profile() {
     setEditingAddress(addr);
     setLabel(addr.label);
     setLine(addr.line);
+    setLatitude(addr.latitude);
+    setLongitude(addr.longitude);
+    setPlaceId(addr.placeId);
     setDialogOpen(true);
+  };
+
+  const handleLocationChange = (location: SelectedLocation) => {
+    setLine(location.formattedAddress);
+    setLatitude(location.lat);
+    setLongitude(location.lng);
+    setPlaceId(location.placeId);
+
+    // Automatically derive label from place name if currently empty or unset
+    if (!label.trim()) {
+      const derived = location.formattedAddress.split(",")[0].trim();
+      // Ensure it doesn't exceed database constraints (50 chars max in addresses table label column)
+      setLabel(derived.substring(0, 50));
+    }
   };
 
   const handleSave = async () => {
@@ -83,10 +108,24 @@ function Profile() {
     setSaving(true);
     try {
       if (editingAddress) {
-        await authService.updateAddress(editingAddress.id, { label, line, isDefault: editingAddress.isDefault });
+        await authService.updateAddress(editingAddress.id, {
+          label,
+          line,
+          isDefault: editingAddress.isDefault,
+          latitude,
+          longitude,
+          placeId,
+        });
         toast.success("Address updated successfully!");
       } else {
-        await authService.addAddress({ label, line, isDefault: !addresses || addresses.length === 0 });
+        await authService.addAddress({
+          label,
+          line,
+          isDefault: !addresses || addresses.length === 0,
+          latitude,
+          longitude,
+          placeId,
+        });
         toast.success("Address added successfully!");
       }
       setDialogOpen(false);
@@ -157,48 +196,58 @@ function Profile() {
                 No saved addresses yet. Add one to complete orders.
               </p>
             ) : (
-              <div className="space-y-3 max-h-[160px] overflow-y-auto pr-1">
+              <div className="space-y-3 max-h-[240px] overflow-y-auto pr-1">
                 {addresses.map((addr) => {
                   const isDefault = defaultAddressId === addr.id;
                   return (
                     <div
                       key={addr.id}
-                      className="flex items-center justify-between border-b border-border/50 pb-2.5 text-sm last:border-0 last:pb-0"
+                      className="flex items-center gap-3 border-b border-border/50 pb-2.5 text-sm last:border-0 last:pb-0"
                     >
-                      <div className="flex flex-col pr-4 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-semibold text-foreground capitalize truncate">{addr.label}</span>
-                          {isDefault && (
-                            <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[9px] font-bold text-primary tracking-wide">
-                              DEFAULT
-                            </span>
-                          )}
+                      {/* Mini map preview */}
+                      <MiniMapPreview
+                        lat={addr.latitude}
+                        lng={addr.longitude}
+                        label={addr.label}
+                        size="sm"
+                        className="shrink-0"
+                      />
+                      <div className="flex flex-1 items-center justify-between min-w-0">
+                        <div className="flex flex-col pr-4 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-semibold text-foreground capitalize truncate">{addr.label}</span>
+                            {isDefault && (
+                              <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[9px] font-bold text-primary tracking-wide">
+                                DEFAULT
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs text-muted-foreground mt-0.5 break-words line-clamp-2">{addr.line}</span>
                         </div>
-                        <span className="text-xs text-muted-foreground mt-0.5 break-words line-clamp-2">{addr.line}</span>
-                      </div>
-                      <div className="flex items-center gap-2.5 shrink-0">
-                        {!isDefault && (
+                        <div className="flex items-center gap-2.5 shrink-0">
+                          {!isDefault && (
+                            <button
+                              onClick={() => makeDefault(addr.id)}
+                              className="text-[10px] font-bold text-primary hover:underline cursor-pointer"
+                            >
+                              Set Default
+                            </button>
+                          )}
                           <button
-                            onClick={() => makeDefault(addr.id)}
-                            className="text-[10px] font-bold text-primary hover:underline cursor-pointer"
+                            onClick={() => handleOpenEdit(addr)}
+                            className="text-muted-foreground hover:text-foreground cursor-pointer"
+                            title="Edit Address"
                           >
-                            Set Default
+                            <Pencil className="size-3.5" />
                           </button>
-                        )}
-                        <button
-                          onClick={() => handleOpenEdit(addr)}
-                          className="text-muted-foreground hover:text-foreground cursor-pointer"
-                          title="Edit Address"
-                        >
-                          <Pencil className="size-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(addr.id)}
-                          className="text-muted-foreground hover:text-destructive cursor-pointer"
-                          title="Delete Address"
-                        >
-                          <Trash2 className="size-3.5" />
-                        </button>
+                          <button
+                            onClick={() => handleDelete(addr.id)}
+                            className="text-muted-foreground hover:text-destructive cursor-pointer"
+                            title="Delete Address"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -224,8 +273,9 @@ function Profile() {
         </Card>
       </div>
 
+      {/* Address dialog with Map Picker */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingAddress ? "Edit Address" : "Add Address"}</DialogTitle>
           </DialogHeader>
@@ -236,6 +286,21 @@ function Profile() {
               value={label}
               onChange={(e) => setLabel(e.target.value)}
             />
+
+            {/* Google Maps Picker */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Select Location
+              </label>
+              <AddressMapPicker
+                initialLat={latitude}
+                initialLng={longitude}
+                initialAddress={line}
+                onLocationChange={handleLocationChange}
+              />
+            </div>
+
+            {/* Address line (auto-filled from map, but editable) */}
             <InputField
               label="Address Line"
               placeholder="e.g. 12, 4th Block, Koramangala, Bengaluru"

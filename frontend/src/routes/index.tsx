@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Clock, ShieldCheck, Truck } from "lucide-react";
+import { Clock, ShieldCheck, Truck, ArrowRight } from "lucide-react";
 import heroImage from "@/assets/hero/zestigo-hero.jpg";
 import { CategoryCard } from "@/components/CategoryCard";
 import { RestaurantCard } from "@/components/RestaurantCard";
@@ -30,20 +30,6 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-
-const perks = [
-  {
-    icon: Truck,
-    title: "Lightning delivery",
-    desc: "Hot meals at your door in 30 minutes or less.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Secure UPI checkout",
-    desc: "Safe payments and a smooth ordering flow.",
-  },
-  { icon: Clock, title: "Live tracking", desc: "Follow your order from kitchen to doorstep." },
-];
 
 function Landing() {
   const { data: categories } = useQuery({
@@ -79,13 +65,13 @@ function Landing() {
             {/* Pill badge */}
             <span className="hero-badge">🍛 Premium Food Delivery</span>
 
-            <h1 className="hero-heading">
+            <h1 className="hero-heading mb-8">
               Fresh Food
               <br />
               <span className="hero-heading-accent">Delivered Faster</span>
             </h1>
 
-            <p className="hero-subtext">
+            <p className="hero-subtext mb-10">
               Discover top-rated restaurants, exclusive offers, and lightning-fast
               delivery with Zestigo. Your next great meal is minutes away.
             </p>
@@ -93,13 +79,9 @@ function Landing() {
             {/* CTA buttons */}
             <div className="hero-cta-row">
               <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
-                <button className="hero-btn-primary" id="hero-order-now-btn">
-                  Order Now
-                </button>
-              </Link>
-              <Link to="/restaurants" search={{ search: undefined, category: undefined }}>
-                <button className="hero-btn-outline" id="hero-explore-btn">
+                <button className="hero-btn-explore" id="hero-explore-btn">
                   Explore Restaurants
+                  <ArrowRight className="size-5" />
                 </button>
               </Link>
             </div>
@@ -120,26 +102,11 @@ function Landing() {
             </div>
           </div>
         </div>
-      </section>
 
-      {/* Perks */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {perks.map((p) => (
-            <div
-              key={p.title}
-              className="flex items-center gap-4 rounded-3xl bg-card p-5 shadow-soft"
-            >
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-secondary text-primary">
-                <p.icon className="size-6" />
-              </span>
-              <div>
-                <h3 className="font-semibold text-foreground">{p.title}</h3>
-                <p className="text-sm text-muted-foreground">{p.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* Bottom transition and glow overlays */}
+        <div className="hero-bottom-glow-radial" />
+        <div className="hero-bottom-blur-layer" />
+        <div className="hero-bottom-transition-green" />
       </section>
 
       {/* Categories */}

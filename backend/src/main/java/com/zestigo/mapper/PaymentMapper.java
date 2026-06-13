@@ -14,7 +14,7 @@ public class PaymentMapper {
                 payment.getRazorpayPaymentId(),
                 payment.getAmount(),
                 payment.getCurrency(),
-                payment.getPaymentMethod(),
+                payment.getPaymentMethod() != null ? payment.getPaymentMethod().name() : null,
                 payment.getPaymentStatus(),
                 payment.getRefundStatus(),
                 payment.getTransactionTime(),

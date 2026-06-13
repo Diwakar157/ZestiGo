@@ -181,7 +181,7 @@ public class PaymentIntegrationTest {
                 .restaurant(testRestaurant)
                 .restaurantName(testRestaurant.getName())
                 .totalAmount(new BigDecimal("740.00")) // (350 * 2) + 40 delivery
-                .status("placed")
+                .status(OrderStatus.PENDING_PAYMENT)
                 .address("12, Koramangala, Bengaluru")
                 .items(new ArrayList<>())
                 .build();
@@ -200,7 +200,7 @@ public class PaymentIntegrationTest {
         Payment payment = Payment.builder()
                 .id(UUID.randomUUID().toString())
                 .order(order)
-                .paymentMethod("card")
+                .paymentMethod(PaymentMethod.CARD)
                 .paymentStatus(PaymentStatus.PENDING)
                 .amount(order.getTotalAmount())
                 .currency("INR")
@@ -258,7 +258,7 @@ public class PaymentIntegrationTest {
         Payment finalPayment = paymentRepository.findById(savedPayment.getId()).orElse(null);
         assertNotNull(finalPayment);
         assertEquals(PaymentStatus.SUCCESS, finalPayment.getPaymentStatus());
-        assertEquals("placed", finalPayment.getOrder().getStatus());
+        assertEquals(OrderStatus.CONFIRMED, finalPayment.getOrder().getStatus());
         assertTrue(cartService.getCartItems(testUserA.getEmail()).isEmpty(), "Cart should be cleared after successful verification");
 
         System.out.println("Test Case 1 Passed: Payment SUCCESS, Order placed, Cart cleared, DB fields correct.");
@@ -273,7 +273,7 @@ public class PaymentIntegrationTest {
                 .restaurant(testRestaurant)
                 .restaurantName(testRestaurant.getName())
                 .totalAmount(new BigDecimal("350.00"))
-                .status("placed")
+                .status(OrderStatus.PENDING_PAYMENT)
                 .address("12, Koramangala, Bengaluru")
                 .items(new ArrayList<>())
                 .build();
@@ -282,7 +282,7 @@ public class PaymentIntegrationTest {
         Payment failPayment = Payment.builder()
                 .id(UUID.randomUUID().toString())
                 .order(failOrder)
-                .paymentMethod("card")
+                .paymentMethod(PaymentMethod.CARD)
                 .paymentStatus(PaymentStatus.PENDING)
                 .amount(failOrder.getTotalAmount())
                 .currency("INR")
@@ -401,7 +401,7 @@ public class PaymentIntegrationTest {
                 .restaurant(testRestaurant)
                 .restaurantName(testRestaurant.getName())
                 .totalAmount(new BigDecimal("390.00"))
-                .status("placed")
+                .status(OrderStatus.PENDING_PAYMENT)
                 .address("12, Work, Bengaluru")
                 .items(new ArrayList<>())
                 .build();
@@ -420,7 +420,7 @@ public class PaymentIntegrationTest {
                 .id(UUID.randomUUID().toString())
                 .order(order)
                 .razorpayOrderId("order_rzp_webhook789")
-                .paymentMethod("card")
+                .paymentMethod(PaymentMethod.CARD)
                 .paymentStatus(PaymentStatus.PENDING)
                 .amount(order.getTotalAmount())
                 .currency("INR")
@@ -484,7 +484,7 @@ public class PaymentIntegrationTest {
         assertNotNull(finalPayment);
         assertEquals(PaymentStatus.SUCCESS, finalPayment.getPaymentStatus());
         assertEquals("pay_rzp_webhook789", finalPayment.getRazorpayPaymentId());
-        assertEquals("placed", finalPayment.getOrder().getStatus());
+        assertEquals(OrderStatus.CONFIRMED, finalPayment.getOrder().getStatus());
         assertTrue(cartService.getCartItems(testUserB.getEmail()).isEmpty(), "Cart should be cleared after successful webhook verification");
 
         // 3. Test signature validation failure

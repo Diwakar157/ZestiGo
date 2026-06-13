@@ -22,6 +22,9 @@ CREATE TABLE IF NOT EXISTS addresses (
     label VARCHAR(50) NOT NULL,
     line TEXT NOT NULL,
     is_default BOOLEAN NOT NULL DEFAULT FALSE,
+    latitude DOUBLE NULL,
+    longitude DOUBLE NULL,
+    place_id VARCHAR(255) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

@@ -39,7 +39,7 @@ export function PaymentSuccessPage({ orderId, paymentId, amount }: PaymentSucces
 
         <div className="flex flex-col gap-3 w-full">
           <Button asChild variant="hero" block size="lg">
-            <Link to="/orders">
+            <Link to="/track-order/$orderId" params={{ orderId }}>
               Track Order <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>

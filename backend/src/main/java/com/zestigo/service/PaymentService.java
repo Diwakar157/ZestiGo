@@ -6,6 +6,7 @@ import com.zestigo.dto.PaymentDto;
 import com.zestigo.dto.PaymentFailureRequest;
 import com.zestigo.dto.VerifyPaymentRequest;
 import com.zestigo.entity.Order;
+import com.zestigo.entity.OrderStatus;
 import com.zestigo.entity.Payment;
 import com.zestigo.entity.PaymentStatus;
 import com.zestigo.entity.User;
@@ -51,12 +52,15 @@ public class PaymentService {
 
     private RazorpayClient razorpayClient;
 
+    private final OrderService orderService;
+
     public PaymentService(PaymentRepository paymentRepository, OrderRepository orderRepository,
-                          UserRepository userRepository, CartService cartService) {
+                          UserRepository userRepository, CartService cartService, OrderService orderService) {
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.cartService = cartService;
+        this.orderService = orderService;
     }
 
     @PostConstruct
@@ -107,7 +111,6 @@ public class PaymentService {
 
             payment.setRazorpayOrderId(razorpayOrderId);
             payment.setPaymentStatus(PaymentStatus.PENDING);
-            payment.setPaymentMethod("razorpay");
             
             // No need for explicit paymentRepository.save() —
             // Payment is managed via Order's CascadeType.ALL.
@@ -168,10 +171,13 @@ public class PaymentService {
             payment.setTransactionTime(LocalDateTime.now());
             paymentRepository.save(payment);
 
-            // Update Order Status to placed (meaning confirmed/placed)
+            // Update Order Status to CONFIRMED
             Order order = payment.getOrder();
-            order.setStatus("placed");
+            order.setStatus(OrderStatus.CONFIRMED);
             orderRepository.save(order);
+
+            // Trigger tracking simulator
+            orderService.simulateOrderTracking(order.getId());
 
             // Clear cart upon successful payment verification
             cartService.clearCart(email);
@@ -283,10 +289,13 @@ public class PaymentService {
             payment.setTransactionTime(LocalDateTime.now());
             paymentRepository.save(payment);
 
-            // Confirm order status = placed
+            // Confirm order status = CONFIRMED
             Order order = payment.getOrder();
-            order.setStatus("placed");
+            order.setStatus(OrderStatus.CONFIRMED);
             orderRepository.save(order);
+
+            // Trigger tracking simulator
+            orderService.simulateOrderTracking(order.getId());
 
             // Clear cart if not already cleared
             String email = order.getUser().getEmail();

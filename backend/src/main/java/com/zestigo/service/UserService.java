@@ -132,6 +132,9 @@ public class UserService {
                 .label(addressDto.getLabel())
                 .line(addressDto.getLine())
                 .isDefault(isDefault)
+                .latitude(addressDto.getLatitude())
+                .longitude(addressDto.getLongitude())
+                .placeId(addressDto.getPlaceId())
                 .build();
 
         Address savedAddress = addressRepository.save(address);
@@ -192,6 +195,9 @@ public class UserService {
 
         address.setLabel(addressDto.getLabel());
         address.setLine(addressDto.getLine());
+        address.setLatitude(addressDto.getLatitude());
+        address.setLongitude(addressDto.getLongitude());
+        address.setPlaceId(addressDto.getPlaceId());
         Address savedAddress = addressRepository.save(address);
         return AddressMapper.toDto(savedAddress);
     }

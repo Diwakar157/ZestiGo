@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { CreditCard, Home, Wallet, type LucideIcon, MapPin, Plus } from "lucide-react";
+import { CreditCard, Home, Wallet, type LucideIcon, MapPin, Plus, Smartphone, Landmark } from "lucide-react";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Button } from "@/components/Button";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +14,7 @@ import { loadRazorpayScript } from "@/features/payment/utils/razorpay";
 import { paymentService } from "@/features/payment/services/paymentService";
 import { InputField } from "@/components/InputField";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { MiniMapPreview } from "@/features/maps/components/MiniMapPreview";
 
 export const Route = createFileRoute("/checkout")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -31,6 +32,8 @@ export const Route = createFileRoute("/checkout")({
 // Presentation-only mapping of payment-method id → icon.
 const methodIcons: Record<string, LucideIcon> = {
   card: CreditCard,
+  upi: Smartphone,
+  netbanking: Landmark,
   wallet: Wallet,
   cod: Home,
 };
@@ -99,7 +102,7 @@ function Checkout() {
       if (method === "cod") {
         await clearCart();
         toast.success("Order placed! 🎉");
-        navigate({ to: "/orders" });
+        navigate({ to: `/track-order/${createdOrder.id}` });
         return;
       }
 
@@ -148,12 +151,7 @@ function Checkout() {
             await clearCart();
             toast.success("Order confirmed! 🎉", { id: "checkout-payment" });
             navigate({
-              to: "/payment-success",
-              search: {
-                orderId: createdOrder.id,
-                paymentId: response.razorpay_payment_id,
-                amount: total,
-              },
+              to: `/track-order/${createdOrder.id}`,
             });
           } catch (err: any) {
             console.error("[Checkout] Verification error:", err);
@@ -165,6 +163,7 @@ function Checkout() {
           name: user?.fullName ?? "",
           email: user?.primaryEmailAddress?.emailAddress ?? "",
           contact: user?.primaryPhoneNumber?.phoneNumber ?? "",
+          method: method !== "cod" ? method : undefined,
         },
         theme: {
           color: "#2D6A4F",
@@ -255,9 +254,13 @@ function Checkout() {
                       address === a.id ? "border-primary bg-secondary" : "border-border bg-card",
                     )}
                   >
-                    <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-primary">
-                      <Home className="size-5" />
-                    </span>
+                    <MiniMapPreview
+                      lat={a.latitude}
+                      lng={a.longitude}
+                      label={a.label}
+                      size="sm"
+                      className="shrink-0"
+                    />
                     <span>
                       <span className="block font-medium text-foreground">{a.label}</span>
                       <span className="block text-sm text-muted-foreground">{a.line}</span>

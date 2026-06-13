@@ -11,11 +11,13 @@ public class OrderDto {
     private String createdAt;
     private String restaurantName;
     private String address;
+    private String paymentMethod;
+    private String paymentStatus;
 
     public OrderDto() {
     }
 
-    public OrderDto(String id, List<CartItemDto> items, BigDecimal total, String status, String createdAt, String restaurantName, String address) {
+    public OrderDto(String id, List<CartItemDto> items, BigDecimal total, String status, String createdAt, String restaurantName, String address, String paymentMethod, String paymentStatus) {
         this.id = id;
         this.items = items;
         this.total = total;
@@ -23,6 +25,8 @@ public class OrderDto {
         this.createdAt = createdAt;
         this.restaurantName = restaurantName;
         this.address = address;
+        this.paymentMethod = paymentMethod;
+        this.paymentStatus = paymentStatus;
     }
 
     // Getters and Setters
@@ -47,6 +51,12 @@ public class OrderDto {
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
+    public String getPaymentMethod() { return paymentMethod; }
+    public void setPaymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; }
+
+    public String getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
+
     // Builder
     public static OrderDtoBuilder builder() {
         return new OrderDtoBuilder();
@@ -60,6 +70,8 @@ public class OrderDto {
         private String createdAt;
         private String restaurantName;
         private String address;
+        private String paymentMethod;
+        private String paymentStatus;
 
         public OrderDtoBuilder id(String id) { this.id = id; return this; }
         public OrderDtoBuilder items(List<CartItemDto> items) { this.items = items; return this; }
@@ -68,9 +80,11 @@ public class OrderDto {
         public OrderDtoBuilder createdAt(String createdAt) { this.createdAt = createdAt; return this; }
         public OrderDtoBuilder restaurantName(String restaurantName) { this.restaurantName = restaurantName; return this; }
         public OrderDtoBuilder address(String address) { this.address = address; return this; }
+        public OrderDtoBuilder paymentMethod(String paymentMethod) { this.paymentMethod = paymentMethod; return this; }
+        public OrderDtoBuilder paymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; return this; }
 
         public OrderDto build() {
-            return new OrderDto(id, items, total, status, createdAt, restaurantName, address);
+            return new OrderDto(id, items, total, status, createdAt, restaurantName, address, paymentMethod, paymentStatus);
         }
     }
 }

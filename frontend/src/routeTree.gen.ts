@@ -24,7 +24,9 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrackOrderOrderIdRouteImport } from './routes/track-order.$orderId'
 import { Route as RestaurantIdRouteImport } from './routes/restaurant.$id'
+import { Route as OrdersOrderIdRouteImport } from './routes/orders.$orderId'
 import { Route as Oauth2RedirectRouteImport } from './routes/oauth2.redirect'
 import { Route as FoodIdRouteImport } from './routes/food.$id'
 
@@ -103,10 +105,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackOrderOrderIdRoute = TrackOrderOrderIdRouteImport.update({
+  id: '/track-order/$orderId',
+  path: '/track-order/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RestaurantIdRoute = RestaurantIdRouteImport.update({
   id: '/restaurant/$id',
   path: '/restaurant/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
+  id: '/$orderId',
+  path: '/$orderId',
+  getParentRoute: () => OrdersRoute,
 } as any)
 const Oauth2RedirectRoute = Oauth2RedirectRouteImport.update({
   id: '/oauth2/redirect',
@@ -125,7 +137,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/offers': typeof OffersRoute
-  '/orders': typeof OrdersRoute
+  '/orders': typeof OrdersRouteWithChildren
   '/payment-failure': typeof PaymentFailureRoute
   '/payment-history': typeof PaymentHistoryRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -137,7 +149,9 @@ export interface FileRoutesByFullPath {
   '/wishlist': typeof WishlistRoute
   '/food/$id': typeof FoodIdRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
   '/restaurant/$id': typeof RestaurantIdRoute
+  '/track-order/$orderId': typeof TrackOrderOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,7 +159,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/offers': typeof OffersRoute
-  '/orders': typeof OrdersRoute
+  '/orders': typeof OrdersRouteWithChildren
   '/payment-failure': typeof PaymentFailureRoute
   '/payment-history': typeof PaymentHistoryRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -157,7 +171,9 @@ export interface FileRoutesByTo {
   '/wishlist': typeof WishlistRoute
   '/food/$id': typeof FoodIdRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
   '/restaurant/$id': typeof RestaurantIdRoute
+  '/track-order/$orderId': typeof TrackOrderOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -166,7 +182,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/offers': typeof OffersRoute
-  '/orders': typeof OrdersRoute
+  '/orders': typeof OrdersRouteWithChildren
   '/payment-failure': typeof PaymentFailureRoute
   '/payment-history': typeof PaymentHistoryRoute
   '/payment-success': typeof PaymentSuccessRoute
@@ -178,7 +194,9 @@ export interface FileRoutesById {
   '/wishlist': typeof WishlistRoute
   '/food/$id': typeof FoodIdRoute
   '/oauth2/redirect': typeof Oauth2RedirectRoute
+  '/orders/$orderId': typeof OrdersOrderIdRoute
   '/restaurant/$id': typeof RestaurantIdRoute
+  '/track-order/$orderId': typeof TrackOrderOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -200,7 +218,9 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/food/$id'
     | '/oauth2/redirect'
+    | '/orders/$orderId'
     | '/restaurant/$id'
+    | '/track-order/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -220,7 +240,9 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/food/$id'
     | '/oauth2/redirect'
+    | '/orders/$orderId'
     | '/restaurant/$id'
+    | '/track-order/$orderId'
   id:
     | '__root__'
     | '/'
@@ -240,7 +262,9 @@ export interface FileRouteTypes {
     | '/wishlist'
     | '/food/$id'
     | '/oauth2/redirect'
+    | '/orders/$orderId'
     | '/restaurant/$id'
+    | '/track-order/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -249,7 +273,7 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
   OffersRoute: typeof OffersRoute
-  OrdersRoute: typeof OrdersRoute
+  OrdersRoute: typeof OrdersRouteWithChildren
   PaymentFailureRoute: typeof PaymentFailureRoute
   PaymentHistoryRoute: typeof PaymentHistoryRoute
   PaymentSuccessRoute: typeof PaymentSuccessRoute
@@ -262,6 +286,7 @@ export interface RootRouteChildren {
   FoodIdRoute: typeof FoodIdRoute
   Oauth2RedirectRoute: typeof Oauth2RedirectRoute
   RestaurantIdRoute: typeof RestaurantIdRoute
+  TrackOrderOrderIdRoute: typeof TrackOrderOrderIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -371,12 +396,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/track-order/$orderId': {
+      id: '/track-order/$orderId'
+      path: '/track-order/$orderId'
+      fullPath: '/track-order/$orderId'
+      preLoaderRoute: typeof TrackOrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/restaurant/$id': {
       id: '/restaurant/$id'
       path: '/restaurant/$id'
       fullPath: '/restaurant/$id'
       preLoaderRoute: typeof RestaurantIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/orders/$orderId': {
+      id: '/orders/$orderId'
+      path: '/$orderId'
+      fullPath: '/orders/$orderId'
+      preLoaderRoute: typeof OrdersOrderIdRouteImport
+      parentRoute: typeof OrdersRoute
     }
     '/oauth2/redirect': {
       id: '/oauth2/redirect'
@@ -395,13 +434,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface OrdersRouteChildren {
+  OrdersOrderIdRoute: typeof OrdersOrderIdRoute
+}
+
+const OrdersRouteChildren: OrdersRouteChildren = {
+  OrdersOrderIdRoute: OrdersOrderIdRoute,
+}
+
+const OrdersRouteWithChildren =
+  OrdersRoute._addFileChildren(OrdersRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
   OffersRoute: OffersRoute,
-  OrdersRoute: OrdersRoute,
+  OrdersRoute: OrdersRouteWithChildren,
   PaymentFailureRoute: PaymentFailureRoute,
   PaymentHistoryRoute: PaymentHistoryRoute,
   PaymentSuccessRoute: PaymentSuccessRoute,
@@ -414,6 +464,7 @@ const rootRouteChildren: RootRouteChildren = {
   FoodIdRoute: FoodIdRoute,
   Oauth2RedirectRoute: Oauth2RedirectRoute,
   RestaurantIdRoute: RestaurantIdRoute,
+  TrackOrderOrderIdRoute: TrackOrderOrderIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

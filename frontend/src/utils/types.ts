@@ -60,7 +60,14 @@ export interface Coupon {
   minOrder: number;
 }
 
-export type OrderStatus = "placed" | "preparing" | "on-the-way" | "delivered";
+export type OrderStatus =
+  | "PENDING_PAYMENT"
+  | "CONFIRMED"
+  | "PREPARING"
+  | "PICKED_UP"
+  | "OUT_FOR_DELIVERY"
+  | "DELIVERED"
+  | "CANCELLED";
 
 export interface Order {
   id: string;
@@ -70,6 +77,8 @@ export interface Order {
   createdAt: string;
   restaurantName: string;
   address: string;
+  paymentMethod?: string;
+  paymentStatus?: string;
 }
 
 export interface Address {
@@ -77,6 +86,9 @@ export interface Address {
   label: string;
   line: string;
   isDefault: boolean;
+  latitude?: number;
+  longitude?: number;
+  placeId?: string;
 }
 
 export interface PaymentMethod {
