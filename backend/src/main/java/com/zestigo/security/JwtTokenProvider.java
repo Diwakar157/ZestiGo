@@ -28,18 +28,21 @@ public class JwtTokenProvider {
     private final long expiration;
     private final String clerkPublishableKey;
     private final String clerkSecretKey;
+    private final String clerkIssuerUrl;
     private final Map<String, PublicKey> clerkPublicKeysCache = new ConcurrentHashMap<>();
 
     public JwtTokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") long expiration,
             @Value("${clerk.publishable-key:}") String clerkPublishableKey,
-            @Value("${clerk.secret-key:}") String clerkSecretKey) {
+            @Value("${clerk.secret-key:}") String clerkSecretKey,
+            @Value("${clerk.issuer-url:}") String clerkIssuerUrl) {
         byte[] keyBytes = Base64.getDecoder().decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.expiration = expiration;
         this.clerkPublishableKey = clerkPublishableKey;
         this.clerkSecretKey = clerkSecretKey;
+        this.clerkIssuerUrl = clerkIssuerUrl;
     }
 
     public String generateToken(String username) {
@@ -165,6 +168,9 @@ public class JwtTokenProvider {
     }
 
     private String getClerkJwksUrl() {
+        if (clerkIssuerUrl != null && !clerkIssuerUrl.isBlank()) {
+            return clerkIssuerUrl.endsWith("/") ? clerkIssuerUrl + ".well-known/jwks.json" : clerkIssuerUrl + "/.well-known/jwks.json";
+        }
         if (clerkPublishableKey == null || clerkPublishableKey.isBlank()) {
             return null;
         }

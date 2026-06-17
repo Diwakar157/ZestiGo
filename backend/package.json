@@ -1,0 +1,11 @@
+{
+  "name": "zestigo-backend",
+  "version": "1.0.0",
+  "description": "NPM Script wrapper for Zestigo Java Backend",
+  "private": true,
+  "scripts": {
+    "dev": "mvn spring-boot:run",
+    "build": "mvn clean package -DskipTests",
+    "start": "java -jar target/backend-0.0.1-SNAPSHOT.jar"
+  }
+}

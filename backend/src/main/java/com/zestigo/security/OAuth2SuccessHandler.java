@@ -22,6 +22,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final UserRepository userRepository;
     private final JwtTokenProvider tokenProvider;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend-url:http://localhost:8080}")
+    private String frontendUrl;
+
     public OAuth2SuccessHandler(UserRepository userRepository, JwtTokenProvider tokenProvider) {
         this.userRepository = userRepository;
         this.tokenProvider = tokenProvider;
@@ -38,7 +41,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String googleId = oAuth2User.getAttribute("sub");
 
         if (email == null) {
-            response.sendRedirect("http://localhost:8080/login?error=Email not provided by Google");
+            response.sendRedirect(frontendUrl + "/login?error=Email not provided by Google");
             return;
         }
 
@@ -69,7 +72,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         String token = tokenProvider.generateToken(email);
 
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/oauth2/redirect")
+        String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth2/redirect")
                 .queryParam("token", token)
                 .queryParam("id", user.getId())
                 .queryParam("name", user.getName())

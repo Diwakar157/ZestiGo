@@ -28,6 +28,12 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend-url:http://localhost:8080}")
+    private String frontendUrl;
+
+    @org.springframework.beans.factory.annotation.Value("${app.admin-url:http://localhost:3001}")
+    private String adminUrl;
+
     public SecurityConfig(JwtAuthFilter jwtAuthFilter, OAuth2SuccessHandler oAuth2SuccessHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.oAuth2SuccessHandler = oAuth2SuccessHandler;
@@ -45,6 +51,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/restaurants/**", "/api/foods/**", "/api/content/**").permitAll()
                 .requestMatchers("/login/oauth2/**", "/oauth2/**").permitAll()
                 .requestMatchers("/api/payments/webhook").permitAll()
+                .requestMatchers("/health").permitAll()
                 .requestMatchers("/api/payments/**").authenticated()
                 .anyRequest().authenticated()
             )
@@ -69,7 +76,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Collections.singletonList("*")); // Support wildcard origin patterns for sandboxes
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            frontendUrl,
+            adminUrl,
+            "http://localhost:8080",
+            "http://localhost:3001",
+            "*"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
         configuration.setExposedHeaders(Collections.singletonList("Authorization"));

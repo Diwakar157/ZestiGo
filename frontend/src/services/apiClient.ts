@@ -8,9 +8,7 @@ import axios, { type InternalAxiosRequestConfig } from "axios";
 const isServer = typeof window === "undefined";
 
 export const apiClient = axios.create({
-  baseURL: isServer
-    ? (import.meta.env.VITE_API_URL || "http://localhost:8081")
-    : "",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8081",
   headers: { "Content-Type": "application/json" },
   timeout: 10000,
 });

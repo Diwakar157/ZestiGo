@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: ${PORT:8080}
 
 spring:
   application:
@@ -15,16 +15,19 @@ spring:
             scope:
               - email
               - profile
+      resourceserver:
+        jwt:
+          issuer-uri: ${CLERK_ISSUER_URL:}
 
   datasource:
-    url: jdbc:mysql://localhost:3306/zestigo_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: root
-    password: "dbms" # Change to your local MySQL password
+    url: ${DB_URL:jdbc:mysql://localhost:3306/zestigo_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:dbms}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   sql:
     init:
-      mode: always
+      mode: ${SQL_INIT_MODE:never}
 
   jpa:
     defer-datasource-initialization: true
@@ -40,12 +43,13 @@ spring:
 jwt:
   # Base64-encoded secret key (256-bit minimum for HS256)
   # Represents: "zestigo-secret-key-for-jwt-token-authentication-minimum-256-bits"
-  secret: emVzdGlnby1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tYXV0aGVudGljYXRpb24tbWluaW11bS0yNTYtYml0cw==
+  secret: ${JWT_SECRET:emVzdGlnby1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tYXV0aGVudGljYXRpb24tbWluaW11bS0yNTYtYml0cw==}
   expiration: 86400000 # 24 hours in milliseconds
 
 clerk:
   publishable-key: ${CLERK_PUBLISHABLE_KEY:pk_test_ZW5oYW5jZWQtbGFyay0yOC5jbGVyay5hY2NvdW50cy5kZXYk}
   secret-key: ${CLERK_SECRET_KEY:sk_test_xrk0XlISEyZMckh9sdrnvS1KKQfq3card3RLHTLzZj}
+  issuer-url: ${CLERK_ISSUER_URL:}
 
 razorpay:
   key-id: ${RAZORPAY_KEY_ID:rzp_test_SznqZyRwZ67iw3}
@@ -56,5 +60,12 @@ logging:
   level:
     org.springframework.web: DEBUG
     org.springframework.security: DEBUG
+
+# Application URL configurations for CORS and OAuth2 redirects
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:8080}
+  admin-url: ${ADMIN_URL:http://localhost:3001}
+
+
 
 
