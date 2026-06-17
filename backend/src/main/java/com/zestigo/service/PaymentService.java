@@ -47,7 +47,7 @@ public class PaymentService {
     @Value("${razorpay.key-secret}")
     private String keySecret;
 
-    @Value("${razorpay.webhook-secret:default_webhook_secret_123}")
+    @Value("${razorpay.webhook-secret:change-me}")
     private String webhookSecret;
 
     private RazorpayClient razorpayClient;

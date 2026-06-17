@@ -103,29 +103,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@Zestigo" },
       { name: "twitter:title", content: "Zestigo — Fresh Food Delivered Fast" },
       {
-        name: "description",
-        content:
-          "Zestigo Delight is a modern Indian food delivery web application for seamless online ordering.",
-      },
-      {
-        property: "og:description",
-        content:
-          "Zestigo Delight is a modern Indian food delivery web application for seamless online ordering.",
-      },
-      {
         name: "twitter:description",
-        content:
-          "Zestigo Delight is a modern Indian food delivery web application for seamless online ordering.",
-      },
-      {
-        property: "og:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/afaaa1e7-bbc0-4d0c-ac1c-f760ccf2c5b0/id-preview-ccc9fa30--b2f15b6f-a6b5-4fb3-bc66-a967dbe5b92e.lovable.app-1780774734630.png",
-      },
-      {
-        name: "twitter:image",
-        content:
-          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/afaaa1e7-bbc0-4d0c-ac1c-f760ccf2c5b0/id-preview-ccc9fa30--b2f15b6f-a6b5-4fb3-bc66-a967dbe5b92e.lovable.app-1780774734630.png",
+        content: "Order from top local restaurants and get it delivered in minutes.",
       },
     ],
     links: [
@@ -163,7 +142,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || "pk_test_ZW5oYW5jZWQtbGFyay0yOC5jbGVyay5hY2NvdW50cy5kZXYk";
+  const publishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
   return (
     <ClerkProvider publishableKey={publishableKey}>

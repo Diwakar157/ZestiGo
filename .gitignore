@@ -23,8 +23,10 @@
 **/logs/
 **/*.log
 
-# Environment variables (optional check)
+# Environment variables
 .env
+.env.*
+!.env.example
 .env.production
 .env.local
 .env.*.local

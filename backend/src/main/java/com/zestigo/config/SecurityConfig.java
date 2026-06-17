@@ -80,8 +80,7 @@ public class SecurityConfig {
             frontendUrl,
             adminUrl,
             "http://localhost:8080",
-            "http://localhost:3001",
-            "*"
+            "http://localhost:3001"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));

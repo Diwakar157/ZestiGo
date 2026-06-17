@@ -1,5 +1,5 @@
 // Zestigo Admin Dashboard — Prisma Schema
-// Maps to the existing zestigo_db MySQL database used by the Spring Boot backend.
+// Maps to the existing zestigo_db PostgreSQL database used by the Spring Boot backend.
 // Uses @@map() and @map() to match existing snake_case table/column names.
 
 generator client {
@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

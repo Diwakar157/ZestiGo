@@ -2,6 +2,9 @@ server:
   port: ${PORT:8080}
 
 spring:
+  profiles:
+    active: ${SPRING_PROFILE:prod}
+
   application:
     name: zestigo-backend
 
@@ -20,10 +23,10 @@ spring:
           issuer-uri: ${CLERK_ISSUER_URL:}
 
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/zestigo_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:dbms}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/zestigo_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
 
   sql:
     init:
@@ -32,40 +35,36 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: ${DDL_AUTO:update}
+    show-sql: ${SHOW_SQL:false}
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
 # JWT Configuration Properties
 jwt:
   # Base64-encoded secret key (256-bit minimum for HS256)
-  # Represents: "zestigo-secret-key-for-jwt-token-authentication-minimum-256-bits"
-  secret: ${JWT_SECRET:emVzdGlnby1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tYXV0aGVudGljYXRpb24tbWluaW11bS0yNTYtYml0cw==}
+  secret: ${JWT_SECRET:change-me-base64-jwt-secret}
   expiration: 86400000 # 24 hours in milliseconds
 
 clerk:
-  publishable-key: ${CLERK_PUBLISHABLE_KEY:pk_test_ZW5oYW5jZWQtbGFyay0yOC5jbGVyay5hY2NvdW50cy5kZXYk}
-  secret-key: ${CLERK_SECRET_KEY:sk_test_xrk0XlISEyZMckh9sdrnvS1KKQfq3card3RLHTLzZj}
+  publishable-key: ${CLERK_PUBLISHABLE_KEY:change-me}
+  secret-key: ${CLERK_SECRET_KEY:change-me}
   issuer-url: ${CLERK_ISSUER_URL:}
 
 razorpay:
-  key-id: ${RAZORPAY_KEY_ID:rzp_test_SznqZyRwZ67iw3}
-  key-secret: ${RAZORPAY_KEY_SECRET:tNSKByoB0RwC3OPUo2cE1T7K}
-  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:default_webhook_secret_123}
+  key-id: ${RAZORPAY_KEY_ID:change-me}
+  key-secret: ${RAZORPAY_KEY_SECRET:change-me}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:change-me}
 
 logging:
   level:
-    org.springframework.web: DEBUG
-    org.springframework.security: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
 
 # Application URL configurations for CORS and OAuth2 redirects
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:8080}
   admin-url: ${ADMIN_URL:http://localhost:3001}
-
-
-
 
