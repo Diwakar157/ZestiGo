@@ -45,7 +45,7 @@ spring:
 # JWT Configuration Properties
 jwt:
   # Base64-encoded secret key (256-bit minimum for HS256)
-  secret: ${JWT_SECRET:change-me-base64-jwt-secret}
+  secret: ${JWT_SECRET}
   expiration: 86400000 # 24 hours in milliseconds
 
 clerk:

@@ -32,12 +32,20 @@ public class JwtTokenProvider {
     private final Map<String, PublicKey> clerkPublicKeysCache = new ConcurrentHashMap<>();
 
     public JwtTokenProvider(
-            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.secret:}") String secret,
             @Value("${jwt.expiration}") long expiration,
             @Value("${clerk.publishable-key:}") String clerkPublishableKey,
             @Value("${clerk.secret-key:}") String clerkSecretKey,
             @Value("${clerk.issuer-url:}") String clerkIssuerUrl) {
-        byte[] keyBytes = Base64.getDecoder().decode(secret);
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException("JWT_SECRET environment variable is required and must be Base64 encoded.");
+        }
+        byte[] keyBytes;
+        try {
+            keyBytes = Base64.getDecoder().decode(secret);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("JWT_SECRET environment variable is required and must be Base64 encoded.", e);
+        }
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.expiration = expiration;
         this.clerkPublishableKey = clerkPublishableKey;

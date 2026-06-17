@@ -106,6 +106,12 @@ cp frontend/.env.example frontend/.env
 cp admin-dashboard/.env.example admin-dashboard/.env.local
 ```
 
+> [!IMPORTANT]
+> The backend requires a valid Base64 encoded key for `JWT_SECRET`. You can generate a secure 512-bit key by running:
+> ```bash
+> openssl rand -base64 64
+> ```
+
 ---
 
 ### Database Setup
