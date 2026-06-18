@@ -35,3 +35,13 @@
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Build & Caches
+**/.next/
+**/.vite/
+**/.cache/
+**/.turbo/
+**/build/
+**/dist/
+**/target/
+**/node_modules/
