@@ -8,10 +8,11 @@ ZestiGo is a premium, modern, and high-performance Indian Food Delivery web appl
 
 * **Gourmet Browsing:** Explore premium restaurants, popular dishes, cuisines, and food categories.
 * **Smart Wishlist & Cart:** Seamless client-side state management for cart updates, coupon application, and saved favorites.
-* **Flexible Checkout:** Support for delivery address configurations, payments (Razorpay, Wallet, Cards, Cash on Delivery), and order placement.
-* **Order Tracking:** Follow your food's status live from the kitchen to your doorstep.
-* **Clerk Authentication:** Secure authentication powered by Clerk with JWT tokens and Google OAuth2 social login.
-* **Interactive UI:** A highly responsive dashboard boasting beautiful card layouts, hover micro-animations, theme toggling, and clean visual structure.
+* **Flexible Checkout & Payments:** Support for delivery address configurations, payments (Razorpay integration, cards, wallet, Cash on Delivery, and **UPI**), and order placement.
+* **Interactive Maps & Real-time Tracking:** Real-time order tracking from kitchen to doorstep. Powered by Google Maps API with components including an **Address Map Picker**, **Current Location Button**, **MiniMap Preview**, **Street View Panel**, and a **Floating Order Tracker**.
+* **Clerk Authentication:** Secure authentication powered by Clerk with JWT tokens and Google OAuth2 social login on both the customer app and admin dashboard.
+* **Interactive UI & Themes:** A highly responsive customer client featuring beautiful card layouts, hover micro-animations, support for custom theme styling, and a redesigned **cinematic full-bleed Hero section** with gradient overlays and fade-in animations.
+* **Order History & Quick Reordering:** View past order records and instantly re-add items to the cart.
 * **Admin Dashboard:** Full-featured admin panel for managing restaurants, food items, orders, users, and delivery partners.
 
 ---
@@ -29,7 +30,7 @@ ZestiGo is a premium, modern, and high-performance Indian Food Delivery web appl
 ### Backend (REST API)
 * **Core:** Spring Boot 3.3.4, Java 21
 * **Build System:** Apache Maven 3.9+
-* **Database & Persistence:** Spring Data JPA, Hibernate, MySQL
+* **Database & Persistence:** Spring Data JPA, Hibernate, PostgreSQL
 * **Security & Auth:** Spring Security, JWT (jjwt), Clerk JWT verification, Google OAuth2
 * **Payments:** Razorpay SDK
 * **Utilities:** Lombok, Jakarta Bean Validation
@@ -54,7 +55,8 @@ ZestiGo/
 │   │   ├── java/com/zestigo/   # Controllers, Services, DTOs, Security
 │   │   └── resources/
 │   │       ├── application.yml # Configuration (env-driven)
-│   │       └── schema.sql      # Database DDL schema
+│   │       ├── schema.sql      # Database DDL schema
+│   │       └── data.sql        # Demo database seed data
 │   ├── Dockerfile          # Production Docker image
 │   ├── .dockerignore
 │   ├── .env.example        # Required environment variables
@@ -89,11 +91,11 @@ ZestiGo/
 ### Prerequisites
 1. **Java Development Kit (JDK 21 or higher)**
 2. **Node.js (v18.x or higher) & npm (v10.x or higher)**
-3. **MySQL Server (v8.x or higher)**
+3. **PostgreSQL Server (v15.x or higher)**
 
 ### Environment Setup
 
-Each module has a `.env.example` file. Copy and fill them in:
+Each module has a `.env.example` file. Copy and fill them in (you can reference the root `.env.example` for all modules):
 
 ```bash
 # Backend
@@ -111,12 +113,19 @@ cp admin-dashboard/.env.example admin-dashboard/.env.local
 > ```bash
 > openssl rand -base64 64
 > ```
+> 
+> Also make sure to set the Google Maps API Keys (`GOOGLE_MAPS_API_KEY`) and Clerk API keys in the `.env` files.
 
 ---
 
 ### Database Setup
-1. Start your local MySQL server.
-2. The backend auto-creates `zestigo_db` on launch if it does not exist (configured in `application.yml`).
+1. Start your local PostgreSQL server or initialize a cloud PostgreSQL database (e.g. Neon).
+2. Create a database named `zestigo_db` (or use your preferred custom database name).
+3. Set the database connection details in `backend/.env` (as `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`) and in `admin-dashboard/.env.local` (as `DATABASE_URL`).
+4. **Schema & Seed Data Setup:**
+   * **Automatic Hibernate Creation:** By default, the application is configured to auto-create and update the tables (`spring.jpa.hibernate.ddl-auto: update`).
+   * **SQL Initialization (data.sql & schema.sql):** Alternatively, you can use the PostgreSQL DDL schema at [schema.sql](file:///c:/Users/Diwakar%20R/Desktop/ZestiGo/backend/src/main/resources/schema.sql) and the seed data at [data.sql](file:///c:/Users/Diwakar%20R/Desktop/ZestiGo/backend/src/main/resources/data.sql) to set up and seed the database.
+   * To enable automatic SQL initialization on backend startup, change `SQL_INIT_MODE=never` to `SQL_INIT_MODE=always` in your backend `.env` file (or set the respective environment variable).
 
 ---
 

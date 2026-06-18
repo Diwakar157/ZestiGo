@@ -1,22 +1,20 @@
--- Disable foreign key checks to safely clear all tables
-SET FOREIGN_KEY_CHECKS = 0;
-
-DELETE FROM payments;
-DELETE FROM order_items;
-DELETE FROM orders;
-DELETE FROM wishlist;
-DELETE FROM reviews;
-DELETE FROM cart_items;
-DELETE FROM cart;
-DELETE FROM addresses;
-DELETE FROM restaurant_categories;
-DELETE FROM food_items;
-DELETE FROM restaurants;
-DELETE FROM food_categories;
-DELETE FROM coupons;
-DELETE FROM users;
-
-SET FOREIGN_KEY_CHECKS = 1;
+-- Safely truncate all tables and cascade the deletion of dependent records
+TRUNCATE TABLE 
+    payments, 
+    order_items, 
+    orders, 
+    wishlist, 
+    reviews, 
+    cart_items, 
+    cart, 
+    addresses, 
+    restaurant_categories, 
+    food_items, 
+    restaurants, 
+    food_categories, 
+    coupons, 
+    users 
+RESTART IDENTITY CASCADE;
 
 -- Seed Demo User (password is 'password')
 INSERT INTO users (id, name, email, password, phone, avatar, role) VALUES
