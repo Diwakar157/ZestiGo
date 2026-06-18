@@ -11,10 +11,26 @@ import java.util.List;
 @Repository
 public interface RestaurantRepository extends JpaRepository<Restaurant, String> {
 
-    @Query("SELECT DISTINCT r FROM Restaurant r LEFT JOIN r.categories c " +
-           "WHERE (:search IS NULL OR LOWER(r.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(r.cuisine) LIKE LOWER(CONCAT('%', :search, '%'))) " +
-           "AND (:categoryId IS NULL OR c.id = :categoryId)")
-    List<Restaurant> findBySearchAndCategory(@Param("search") String search, @Param("categoryId") String categoryId);
+    @Query("""
+        SELECT DISTINCT r
+        FROM Restaurant r
+        LEFT JOIN r.categories c
+        WHERE (
+            :search IS NULL
+            OR LOWER(CAST(r.name AS string))
+                LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(CAST(r.cuisine AS string))
+                LIKE LOWER(CONCAT('%', :search, '%'))
+        )
+        AND (
+            :categoryId IS NULL
+            OR c.id = :categoryId
+        )
+        """)
+    List<Restaurant> findBySearchAndCategory(
+            @Param("search") String search,
+            @Param("categoryId") String categoryId
+    );
 
     List<Restaurant> findByPromotedTrue();
 }
